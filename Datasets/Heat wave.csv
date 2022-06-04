@@ -1,0 +1,13 @@
+﻿"Figure 1. Heat Wave Characteristics in the United States by Decade, 1961–2019",,,,
+Source: EPA's Climate Change Indicators in the United States: www.epa.gov/climate-indicators,,,,
+"Data source: NOAA, 2021",,,,
+Web update: April 2021,,,,
+Units: number of heat waves; length of heat waves (days); length of heat wave season (days); °F,,,,
+,,,,
+Decade,Frequency (average number of heat waves per year),Duration (average number of individual heat waves),Season (average length of annual heat wave season),Intensity (average temperature above local threshold during heat waves)
+1960s,2.044,2.986402885,22.006,1.991431205
+1970s,2.8,3.186638976,32.984,2.11228497
+1980s,3.1,3.28107472,37.202,2.187414449
+1990s,3.776,3.44986338,44.974,2.313020176
+2000s,4.492,3.625027259,51.296,2.359049638
+2010s,6.024444444,3.961930442,68.60888889,2.460453219
