@@ -1,0 +1,100 @@
+<html>
+    <head>
+        <title> Percentage of whole sample reporting specific emotions in relation to climate change </title>
+        <script src="https://d3js.org/d3.v4.min.js"></script>
+        <link rel="stylesheet" href="Style Lab 1.css"/>
+    </head>
+
+    <style>
+        table {
+            border-collapse: collapse;
+            border: 2px black solid;
+            font: 12px sans-serif;
+        }
+
+        td {
+            border: 1px black solid;
+            padding: 5px;
+        }
+    </style>
+
+    <body>
+        <h1 style="text-align:center; font-size:12x; font-family:arial; color:black; margin:10px;">Percentage (%) of whole sample reporting specific emotions in relation to climate change</h1>
+        <p></p>
+        <script type="text/javascript">
+
+            var tabulate = function (data,columns) {
+                var margin = {top: 300, right: 30, bottom: 30, left: 30}, 
+                width = 1000 - margin.left - margin.right, 
+                height = 400 - margin.top - margin.bottom;
+
+                var table = d3.select('body').append('table')
+                            .attr("style","margin-left: 310")
+                            .attr("width", width + margin.left + margin.right)
+                            .attr("height", height + margin.top + margin.bottom)
+                            .attr("transform", "translate(" + margin.left + "," + margin.top + ")")
+                            .style("border-collapse", "collapse")
+                            .style("border", "2px black solid")
+
+                var thead = table.append('thead')
+                var tbody = table.append('tbody')
+
+                thead.append('tr')
+                    .selectAll('th')
+                    .data(columns)
+                    .enter()
+                    .append('th')
+                    .text(function (d) { return d })
+
+                var rows = tbody.selectAll('tr')
+                    .data(data)
+                    .enter()
+                    .append('tr')
+
+                var cells = rows.selectAll('td')
+                    .data(function(row) {
+                        return columns.map(function (column) {
+                        return { column: column, value: row[column] }})
+                    })
+                    .enter()
+                    .append('td')
+                    .text(function (d) {return d.value})
+                    return table;
+                }
+                
+                d3.csv('https://raw.githubusercontent.com/GordonHuy/Data_Visualization_Project/master/Datasets/Percentage%20of%20the%20whole%20sample%20and%20by%20county%20of%20beliefs%20about%20goverment%20reponse%20about%20climate%20change.csv',function (data) {
+                    var columns = ['Thought about government reponse','All countries','Brazil','France','Finland','India','Nigeria','Philippines','Portugal','UK','USA']
+                    tabulate(data,columns)
+                })
+
+        </script>
+
+        <script type="text/javascript">
+            var rowConverter = function(d){
+                return {
+                    Though : d["Thought about government reponse"],
+                    Countries : d["All countries"],
+                    Australia : d.Australia,
+                    Brazil : d.Brazil,
+                    France : d.France,
+                    Finland : d.Finland,
+                    India : d.India,
+                    Nigeria : d.Nigeria,
+                    Philippines : d.Philippines,
+                    Portugal : d.Portugal,
+                    UK : d["UK"],
+                    USA : d["USA"]
+                }
+            }
+            d3.csv("https://raw.githubusercontent.com/GordonHuy/Data_Visualization_Project/master/Datasets/Percentage%20of%20the%20whole%20sample%20and%20by%20county%20of%20beliefs%20about%20goverment%20reponse%20about%20climate%20change.csv", rowConverter, function(error, data){
+                if (error){
+                    console.log(error);
+                }
+                else {
+                    console.table(data);
+                }
+            });
+
+        </script>
+    </body>
+</html>          
