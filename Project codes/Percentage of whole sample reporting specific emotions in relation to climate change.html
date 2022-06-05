@@ -2,7 +2,7 @@
     <head>
         <title> Percentage of whole sample reporting specific emotions in relation to climate change </title>
         <script src="https://d3js.org/d3.v4.min.js"></script>
-        <link rel="stylesheet" href="Style Lab 1.css"/>
+        <link rel="stylesheet" href="CSS files\Percentage of whole sample reporting specific emotions in relation to climate change.css"/>
     </head>
 
     <style>
@@ -26,7 +26,7 @@
             var tabulate = function (data,columns) {
                 var margin = {top: 300, right: 30, bottom: 30, left: 30}, 
                 width = 1000 - margin.left - margin.right, 
-                height = 400 - margin.top - margin.bottom;
+                height =200 - margin.top - margin.bottom;
 
                 var table = d3.select('body').append('table')
                             .attr("style","margin-left: 310")
@@ -69,10 +69,12 @@
 
         </script>
 
+        <div id="HorizontalBarChart"></div>
+
         <script type="text/javascript">
             var rowConverter = function(d){
                 return {
-                    Though : d["Thought about government reponse"],
+                    Thoughts : d["Thought about government reponse"],
                     Countries : d["All countries"],
                     Australia : d.Australia,
                     Brazil : d.Brazil,
@@ -92,6 +94,46 @@
                 }
                 else {
                     console.table(data);
+                    
+                    var margin = {top:30, right:120, bottom:70, left: 600},
+                    width = 1200 - margin.left - margin.right,
+                    height = 500 - margin.top - margin.bottom;
+
+                    var svg = d3.select("#HorizontalBarChart")
+                                .append("svg")
+                                .attr("width", width + margin.left + margin.right)
+                                .attr("height", height + margin.top + margin.bottom)
+                                .append("g")
+                                .attr("transform", "translate(" + margin.left + "," + margin.top + ")");
+
+                    var x = d3.scaleLinear()
+                            .domain([0,d3.max(data, function(d) { return d.Countries; })])
+                            .range([ 0, width]);
+
+                        svg.append("g")
+                            .attr("transform", "translate(0," + height + ")")
+                            .call(d3.axisBottom(x))
+                            .selectAll("text")
+                            .style("text-anchor", "end");      
+
+                    var y = d3.scaleBand()
+                            .range([0, height])
+                            .domain(data.map(function(d) {return d.Thoughts;}))
+                            .padding(0.25);
+                            
+                        svg.append("g")
+                            .call(d3.axisLeft(y))
+
+                        svg.selectAll("myRect")
+                            .data(data)
+                            .enter()
+                            .append("rect")
+                            .attr("x", function(d){return x(0)} )
+                            .attr("y", function(d) { return y(d.Thoughts); })
+                            .attr("width", function(d) { return x(d.Countries); })
+                            .attr("height", y.bandwidth() )
+                            .attr("fill", "#69b3a2")
+                   
                 }
             });
 
