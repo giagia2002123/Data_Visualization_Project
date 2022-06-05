@@ -22,13 +22,17 @@
 
         <script type="text/javascript">
 
-            /*var rowConverter = function(d){
+            var rowConverter = function(d){
                 return {
                     Though : d["Thought about government reponse"],
-                    countries : d["All countries"]
+                    Countries : d["All countries"],
+                    Australia : d.Australia,
+                    Brazil : d.Brazil,
+                    France : d.France,
+                    Finland : d.Finland,
                 }
-            }*/
-            d3.csv("https://raw.githubusercontent.com/GordonHuy/Data_Visualization_Project/master/Datasets/Percentage%20of%20the%20whole%20sample%20and%20by%20county%20of%20beliefs%20about%20goverment%20reponse%20about%20climate%20change.csv", function(error, data){
+            }
+            d3.csv("https://raw.githubusercontent.com/GordonHuy/Data_Visualization_Project/master/Datasets/Percentage%20of%20the%20whole%20sample%20and%20by%20county%20of%20beliefs%20about%20goverment%20reponse%20about%20climate%20change.csv", rowConverter, function(error, data){
                 if (error){
                     console.log(error);
                 }
