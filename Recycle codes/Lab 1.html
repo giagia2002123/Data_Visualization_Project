@@ -1,0 +1,44 @@
+<html>
+
+   <head>
+    <title> Lab 1 </title>
+	<link rel="stylesheet" href="Style Lab 1.css" />
+   </head>
+   
+   <body>
+    <h3 class="name">Nguyễn Ngọc Huy</h3>
+	<h4 id="ID">ITDSIU18052</h4>
+	<h4 class="TCT">Data science and data visualization</h4>
+	<h4 class="TLT">Lab 1 – Introduction to HTML, CSS, SVG, and JavaScript</h4>
+	<p class="TT">This is all my own work. I did not copy the code from any other source</p>
+	
+	<svg id=”initials” width=”250” height=”150”>
+	 <rect x="0" y="0" rx="7" ry="7" width="700" height="300" id="MyRect"/>
+	 <text x="10" y="30" id="MyText">TRAN THANH TUNG</text>
+	 
+	 <line x1="50" x2="150" y1="150" y2="150" stroke="blue" stroke-width="10" stroke-linecap="round"/>
+	 <line x1="100" x2="100" y1="150" y2="250" stroke="blue" stroke-width="10" stroke-linecap="round"/>
+	 
+	 <line x1="180" x2="280" y1="150" y2="150" stroke="blue" stroke-width="10" stroke-linecap="round"/>
+	 <line x1="230" x2="230" y1="150" y2="250" stroke="blue" stroke-width="10" stroke-linecap="round"/>
+	 
+	 <line x1="310" x2="410" y1="150" y2="150" stroke="blue" stroke-width="10" stroke-linecap="round"/>
+	 <line x1="360" x2="360" y1="150" y2="250" stroke="blue" stroke-width="10" stroke-linecap="round"/>
+	</svg>
+	
+	<svg id=”histogram” width=”300” height=”400”>
+	</svg>
+	
+	function addEltToSVG(svg, name, attrs)
+	{
+     var element = document.createElementNS("http://www.w3.org/2000/svg", name);
+     if (attrs === undefined) attrs = {};
+     for (var key in attrs) {
+      element.setAttributeNS(null, key, attrs[key]);
+	  }
+     svg.appendChild(element);
+	}
+	
+   </body>
+   
+ </html>

@@ -1,0 +1,83 @@
+<html>
+
+   <head>
+    <title> Lab 7 </title>
+	<script src="https://d3js.org/d3.v4.min.js"></script>
+   </head>
+	
+   <body>
+    <p class="name">Nguyễn Ngọc Huy</p>
+	<p id="ID">ITDSIU18052</p>
+	<p class="TCT">Data science and data visualization</p>
+	<p class="TLT">The lab title “Lab 7 –D3.js – GeoMapping”</p>
+	<p class="TT">This is all my own work. I did not copy the code from any other source</p>
+		
+	<script type="text/javascript">
+    
+    var rowConverter = function(d) {
+	   return{ 
+	      province : d.Province,
+          infected : d.Infected
+       };
+	}
+
+	d3.csv("https://raw.githubusercontent.com/GordonHuy/Dataset/master/output.csv", rowConverter, function(error, data) {
+       if (error) {
+	    console.log(error);
+       }
+       else {
+	    console.table(data);
+          
+        var svg = d3.select("body").append("svg")
+                                  .attr("width", 2000)
+                                  .attr("height", 2000)
+
+        d3.json("https://raw.githubusercontent.com/TungTh/tungth.github.io/master/data/vn-provinces.json", function (mapdata){
+            
+            var group = svg.selectAll("g")
+            .data(mapdata.features)
+            .enter()
+            .append("g")
+
+            var projection = d3.geoMercator().translate([-6200,1600]).scale(3500);
+
+            var path = d3.geoPath().projection(projection);
+
+            for (var x = 0; x < data.length; x++){
+                var dataProvince = data[x].province;
+                var dataValue = parseFloat(data[x].infected)
+                for( var y = 0; y < mapdata.features.length; y++){
+                    var jsonProvince = mapdata.features[y].properties.Ten;
+                    if (dataProvince == jsonProvince){
+                        mapdata.features[y].properties.value = dataValue;
+                        break
+                    }
+                }
+            }
+
+            var colorScale = d3.scaleThreshold()
+                                .domain([d3.min(data, function (d) {return d.infected}),d3.max(data, function (d) {return d.infected})])
+                                .range(["#5E4FA2", "#3288BD", "#66C2A5", "#ABDDA4", "#E6F598", "#FFFFBF", "#FEE08B", "#FDAE61", "#F46D43", "#D53E4F", "#9E0142"]);
+
+            var areas = group.append("path")
+                            .attr("d", path)
+                            .attr("class","area")
+                            .style("stroke-width", "1")
+                            .style("stroke", "yellow")
+                            .style("fill", function(d) { return colorScale(d.infected); })
+
+            /*group.append("text")
+                .attr("x", function(d) {return path.centroid(d)[0]; })
+                .attr("y", function(d) {return path.centroid(d)[1]; })
+                .attr("text-anchor", "middle")
+                .text(function (d) {return d.properties.Ten; })
+            */
+
+           })
+	   }
+	})
+
+		  
+	</script>
+   </body>
+ </html>  

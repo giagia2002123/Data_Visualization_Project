@@ -1,0 +1,234 @@
+<html>
+
+   <head>
+    <title> Lab 2 </title>
+	<script src="https://d3js.org/d3.v4.min.js"></script>
+   </head>
+	
+   <body>
+    <p class="name">Nguyễn Ngọc Huy</p>
+	<p id="ID">ITDSIU18052</p>
+	<p class="TCT">Data science and data visualization</p>
+	<p class="TLT">Lab 2 – Introduction to D3.js</p>
+	<p class="TT">This is all my own work. I did not copy the code from any other source</p>
+	
+	<script type="text/javascript">
+	 var dataset = [];
+	  for (var i = 0; i < 11; i++) { 
+       var newNumber = Math.floor(Math.random() * 120);
+	   dataset.push(newNumber);
+	  }
+	  
+	 var w = 500;
+     var h = 500;
+	 var barPadding = 1;
+	 
+	 var svg = d3.select("body")
+                 .append("svg")
+                 .attr("width", w)
+                 .attr("height", h)
+				 .style("background", "#7DF9FF")
+				 
+	 svg.selectAll("rect")
+        .data(dataset)
+        .enter()
+        .append("rect")
+        .attr("x", 0)
+        .attr("y", 0)
+        .attr("width", w / dataset.length - barPadding)
+		.attr("height", function(d) {return d*4;})
+		.attr("x", function(d, i) {return i * (w / dataset.length);})
+		.attr("y", function(d) {return h - d*4;})
+		.attr("fill", function(d) {return "rgb(0, 0, " + Math.round(d * 10) + ")";});
+		
+	 svg.selectAll("text")
+        .data(dataset)
+        .enter()
+        .append("text")
+		.text(function(d) {return d;})
+		.attr("x", function(d, i) {return i * (w / dataset.length) + (w / dataset.length - barPadding) / 2;})
+        .attr("y", function(d) {return h - (d * 4) + 14;})
+		.attr("font-family", "sans-serif")
+        .attr("font-size", "11px")
+        .attr("fill", "white")
+		.attr("text-anchor", "middle")
+	 
+	</script>
+
+	<p></p>
+	<div id="scatterplot"></div> 
+	
+	<script type="text/javascript">
+	
+	var rowConverter = function(d) {
+	   return{ 
+	      Midterm: d.Midterm,
+          Final: d.Final
+       };
+	}
+	
+	 d3.csv("https://tungth.github.io/data/vis-lab2-data.csv",rowConverter, function(error, data)
+	 { 
+	    if (error){
+	       console.log(error);
+        }
+        else {
+	       console.log(data);
+		   
+		   var margin = {top: 0, right: 30, bottom: 30, left: 30}, 
+		       width = 1300 - margin.left - margin.right,
+               height = 800 - margin.top - margin.bottom;
+           var padding = 20;
+		   
+		   var svg = d3.select("#scatterplot")
+                       .append("svg")
+                       .attr("width", width + margin.left + margin.right)
+                       .attr("height", height + margin.top + margin.bottom)
+                       .append("g")
+                       .attr("transform", "translate(" + margin.left + "," + margin.top + ")");
+		   
+		   var xScale = d3.scaleLinear()
+		                  .domain([0, d3.max(data, function(d) {return d.Midterm})])
+						  .range([padding, width - padding*2])
+						  
+		   var yScale = d3.scaleLinear()
+		                  .domain([0, d3.max(data, function(d) {return d.Final})])
+						  .range([height - padding, padding])
+		   
+		   var x_axis = d3.axisBottom()
+                         .scale(xScale);
+           var xAxisTranslate = height - 20;
+                      svg.append("g")
+                         .attr("transform", "translate(0, " + xAxisTranslate  +")")
+                         .call(x_axis)
+						 
+		   var y_axis = d3.axisLeft()
+                          .scale(yScale);
+           var yAxisTranslate = 0;
+                        svg.append("g")
+                           .attr("transform", "translate(20 " + yAxisTranslate  +")")
+                           .call(y_axis);
+						   
+		   svg.selectAll("circle")
+		       .data(data)
+			   .enter()
+			   .append("circle")
+			   .attr("cx", function(d) {return xScale(d.Midterm);})
+			   .attr("cy", function(d) {return yScale(d.Final);})
+			   .attr("r", 5)
+			   .style("fill", function(d,i){
+			   i = d.Midterm*(40/100)+d.Final*(60/100);
+			   if (i < 50){return "red"}
+			   else {return "green"}})
+			   
+		   svg.append("text")
+			  .style("font-size", "20px")
+			  .style("font-weight", "bold")
+			  .attr("font-family", "Arial")
+              .attr("text-anchor", "end")
+              .attr("x", width - 500)
+              .attr("y", height + margin.top + 30)
+              .text("Midterm Scores")
+              .attr("fill","blue");
+			  
+		   svg.append("text")
+		      .style("font-size", "20px")
+		      .style("font-weight", "bold")
+			  .attr("font-family", "Arial")
+              .attr("text-anchor", "end")
+              .attr("text-anchor", "end")
+              .attr("transform", "rotate(-90)")
+              .attr("y", -margin.left+20)
+              .attr("x", -margin.top-300)
+              .text("Final Scores")
+              .attr("fill","blue"); 
+         }
+      });      
+	</script>
+	
+	<p></p>
+	<div id="Histogram"></div>
+	
+	<script type="text/javascript">
+	 
+	 var rowConverter = function(d){
+	    return{ 
+		   Final: parseInt(d.Final),
+		};
+	 }
+	 
+	 d3.csv("https://tungth.github.io/data/vis-lab2-data.csv",rowConverter, function(error, data)
+	 { 
+	    if (error){
+	       console.log(error);
+        }
+        else {
+	       console.log(data);
+		   
+		   data.forEach(function(d){d.Final = +d.Final;})
+		   
+		   var Bin = new Array(10).fill(0);
+		   for (let i=0; i<data.length; i++){
+		      if (data[i].Final >= 0 && data[i].Final <= 10){Bin[0]++;}
+		      if (data[i].Final > 10 && data[i].Final <= 20){Bin[1]++;}
+              if (data[i].Final  > 20 && data[i].Final <= 30){Bin[2]++;}
+              if (data[i].Final > 30 && data[i].Final <= 40){Bin[3]++;}
+              if (data[i].Final > 40 && data[i].Final <= 50){Bin[4]++;}
+              if (data[i].Final > 50 && data[i].Final <= 60){Bin[5]++;}
+              if (data[i].Final > 60 && data[i].Final <= 70){Bin[6]++;}
+              if (data[i].Final > 70 && data[i].Final <= 80){Bin[7]++;}
+              if (data[i].Final > 80 && data[i].Final <= 90){Bin[8]++;}
+              if (data[i].Final > 90 && data[i].Final <= 100){Bin[9]++;}
+		   }
+		   console.log(Bin);
+		   
+		   var width = 550,
+		       height = 550,
+			   barPadding = 1;
+			   
+		   var svg = d3.select("#Histogram")
+		               .append("svg")
+					   .attr("width", width)
+					   .attr("height", height);
+					   
+		   var rects = svg.selectAll("MyRect")
+		                  .data(Bin)
+						  .enter()
+						  .append("rect")
+						  .attr("x", 0)
+						  .attr("y", 0)
+						  .attr("width", w/Bin.length - barPadding)
+						  .attr("height", 200)
+						  .attr("x", function(d,i){return i*(w/Bin.length);})
+						  .attr("height", function(d,i){return 8*d;})
+						  .attr("y", function(d){return h-8*d;})
+						  .attr("fill", function(d){return "blue"});
+					
+		   svg.selectAll("text")
+              .data(Bin)
+              .enter()
+              .append("text")
+	      	  .text(function(d) {return d;})
+		      .attr("x", function(d, i) {return i * (w / Bin.length) + (w / Bin.length - barPadding) / 2;})
+              .attr("y", function(d) {return h - (d * 8) + 14;})
+		      .attr("font-family", "sans-serif")
+              .attr("font-size", "11px")
+              .attr("fill", "white")
+		      .attr("text-anchor", "middle")
+			  
+		   var x = d3.scaleLinear()
+		             .domain([0,d3.max(data, function(d) { return d.Final;})])
+					 .range([0, 498]);
+					 
+		   svg.append("g")
+              .attr("transform", "translate(0,500)")      
+              .call(d3.axisBottom(x));
+			  
+	  }
+	 });
+
+	</script>
+	
+	
+   </body>
+ </html>

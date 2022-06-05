@@ -1,0 +1,108 @@
+<html>
+
+   <head>
+    <title> Lab 3 </title>
+	<script src="https://d3js.org/d3.v4.min.js"></script>
+   </head>
+	
+   <body>
+    <p class="name">Nguyễn Ngọc Huy</p>
+	<p id="ID">ITDSIU18052</p>
+	<p class="TCT">Data science and data visualization</p>
+	<p class="TLT">Lab 3 –D3.js - scales</p>
+	<p class="TT">This is all my own work. I did not copy the code from any other source</p>
+	
+	<div id="scatterplot"></div>
+	
+	<script type="text/javascript">
+		  
+    var rowConverter = function(d) {
+	   return{ 
+	      population : parseFloat(d.population),
+          area : parseFloat(d.area),
+          density : parseFloat(d.density),
+          GRDP : parseFloat(d["GRDP-VND"])
+       };
+	}
+
+	d3.csv("https://tungth.github.io/data/vn-provinces-data.csv", rowConverter, function(error, data) {
+       if (error) {
+	      console.log(error);
+       }
+       else {
+	      console.log(data);
+		  
+		  var margin = {top: 0, right: 30, bottom: 30, left: 30}, 
+		           w = 1300 - margin.left - margin.right,
+                   h = 800 - margin.top - margin.bottom;
+          var padding = 20;
+		  
+		  var xScale = d3.scaleLinear()
+		                 .domain([0, d3.max(data, function (d) {return d.population})])
+						 .range([padding, w-padding*2])
+						 
+		  var yScale = d3.scaleLinear()
+		                 .domain([0, d3.max(data, function(d) { return d.GRDP})])
+						 .range([h-padding, padding])
+						 
+		  var rScale= d3.scaleLinear()
+                        .domain ([ d3.min(data, function (d) {return d.area}), d3.max(data, function (d) {return d.area})])
+                        .range([5,30])
+		  
+		  var colorScale = d3.scaleSequential()
+                             .domain([d3.min(data, function (d) {return d.density}),d3.max(data, function (d) {return d.density})])
+                             .interpolator(d3.interpolateCool)
+							 
+		  var svg = d3.select("#scatterplot")
+                      .append("svg")
+                      .attr("width", w + margin.left + margin.right)
+                      .attr("height", h + margin.top + margin.bottom)
+                      .append("g")
+                      .attr("transform", "translate(" + margin.left + "," + margin.top + ")");
+                    d3.max(data, function (d) {return d.density})
+					
+		  var x_axis = d3.axisBottom()
+                         .scale(xScale);
+          var xAxisTranslate = h-20;
+          svg.append("g")
+             .attr("transform", "translate(15, " + xAxisTranslate  +")")
+             .call(x_axis)
+						  
+		  var y_axis = d3.axisLeft()
+                         .scale(yScale);
+          var yAxisTranslate = 0;
+          svg.append("g")
+             .attr("transform", "translate(35, " + yAxisTranslate  +")")
+             .call(y_axis);
+						  
+		  svg.append("text")
+             .attr("text-anchor", "end")
+             .attr("x", w-550)
+             .attr("y", h + margin.top + 20)
+             .text(" Population")
+             .attr("fill","blue");
+			  
+		  svg.append("text")
+             .attr("text-anchor", "end")
+             .attr("transform", "rotate(-90)")
+             .attr("y", -margin.left+20)
+             .attr("x", -margin.top-350)
+             .text("GRDP-VND")
+             .attr("fill","blue");  
+			  
+		  svg.selectAll("circle")
+             .data(data)
+             .enter()
+             .append("circle")
+             .attr("cx", function(d) {return xScale(d.population);})
+             .attr("cy", function(d) {return yScale(d.GRDP);})
+             .attr("r", function(d)  {return rScale(d.area);})
+			 .style("fill", function(d, i) { return colorScale(d.density); })
+
+	   }
+	})
+    
+
+	</script>
+   </body>
+ </html>  

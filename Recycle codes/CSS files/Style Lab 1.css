@@ -1,0 +1,19 @@
+.name {
+	color: blue;
+	text-align: center;
+	}
+.TLT {
+	font-style: italic;
+	font-weight: normal;
+	}
+	
+#MyRect {
+	stroke: blue;
+	fill: transparent;
+	stroke-width: 5;
+}
+
+#MyText {
+	font-size: 30;
+	font-weight: bold;
+}

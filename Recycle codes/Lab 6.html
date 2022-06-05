@@ -1,0 +1,158 @@
+<html>
+   <head>
+    <title> Lab 6 </title>
+	<script src="https://d3js.org/d3.v4.min.js"></script>
+   <link rel="stylesheet" href="CSS files/Style Lab 6.css"/>
+   </head>
+	
+   <body>
+    <p class="name">Nguyễn Ngọc Huy</p>
+	<p id="ID">ITDSIU18052</p>
+	<p class="TCT">Data science and data visualization</p>
+	<p class="TLT">Lab 6 –D3.js – Line and stacked area chart</p>
+	<p class="TT">This is all my own work. I did not copy the code from any other source</p>
+	
+    <div id="LineGraph"></div>
+
+    <div id="tooltip" class="hidden">
+      <p><strong>Time:<strong></p>
+     <p><span id="value">100</span></p>
+   </div>
+
+    <style>
+      .selected {
+       opacity: 1 !important;
+       stroke: black;
+       stroke-width: 1px;
+      }
+     </style>
+
+	<script type="text/javascript">
+		  
+    var rowConverter = function(d) {
+	   return{
+           Country : d.Country,
+           Time : d3.timeParse("%m/%d/%Y")(d.Date),
+           Cases : parseFloat(d["Number of confirmed cases"])
+       };
+	}
+
+	d3.csv("https://raw.githubusercontent.com/GordonHuy/Dataset/master/time_series_covid19_confirmed_global_transposed.csv", rowConverter, function(error, data) {
+        if (error) {
+	    console.log(error);
+        }
+        else {
+	    console.table(data);
+
+        var newdata = d3.nest()
+                        .key(function(d) {return d.Country})
+                        .entries(data);
+                       
+        console.table(newdata)
+
+        var margin = {top: 100, right: 50, bottom: 100, left: 100},
+        width = 800 - margin.left - margin.right,
+        height = 800 - margin.top - margin.bottom;
+        
+         var svg = d3.select("#LineGraph")
+                     .append("svg")
+                     .attr("width", width + margin.left + margin.right)
+                     .attr("height", height + margin.top + margin.bottom)
+                     .append("g")
+                     .attr("transform", "translate(" + margin.left + "," + margin.top + ")");
+        
+         var xScale = d3.scaleTime()
+                        .domain(d3.extent(data, function(d) { return d.Time; }))
+                        .range([ 0, width ]);
+                     svg.append("g")
+                        .attr("transform", "translate(0," + height + ")")
+                        .call(d3.axisBottom(xScale));
+
+         var yScale = d3.scaleLinear()
+                        .domain([0, d3.max(data, function(d) { return +d.Cases; })])
+                        .range([ height, 0 ]);
+                     svg.append("g")
+                        .call(d3.axisLeft(yScale));
+
+         var line = d3.line().x(function(d) { return xScale(d.Time) })
+                             .y(function(d) { return yScale(d.Cases) })
+                           
+               svg.append("text")
+                  .attr("x", width/2 )
+                  .attr("y", height - 15 + 80)
+                  .attr("text-anchor", "middle")
+                  .style("font-weight", "bold")
+                  .style("font-family", "Arial")
+                  .style("font-size", 38)
+                  .text("Time");
+
+               svg.append("text")
+                  .attr("text-anchor", "middle")
+                  .attr("transform", "rotate(-90)")
+                  .attr("x", - margin.top - 200)
+                  .attr("y", - margin.right - 10)
+                  .style("font-weight", "bold")
+                  .style("font-family", "Arial")
+                  .style("font-size", 38)
+                  .text("Number of confirmed cases");
+
+               svg.selectAll("MyCircle")
+                  .data(data)
+                  .enter()
+                  .append("svg:circle")
+                  .attr("cx", function (d) { return xScale(d.Time); } )
+                  .attr("cy", function (d) { return yScale(d.Cases); } )
+                  .attr("r", 5)
+                  .attr("fill", "black")
+                  .on("mouseover", function(d){
+							   d3.select(this)
+							     .attr("fill", "red")
+							   var xPosition = parseFloat(d3.select(this).attr("cx") + width/2);
+							   var yPosition = parseFloat(d3.select(this).attr("cy")/2 + height/2);
+							   
+							   d3.select("#tooltip")
+							     .style("left", xPosition + "px")
+								 .style("top", yPosition + "px")
+								 .select("#value")
+								 .text(d.Time + ", number of confirmed cases: " + d.Cases);
+							   
+							   d3.select("#tooltip").classed("hidden", false);
+							})
+							.on("mouseout",function(d){
+							   d3.select(this)
+							     .transition()
+								 .duration(400)
+								 .attr("fill", "black");
+							   d3.select("#tooltip").classed("hidden", true);
+							});	
+
+               svg.selectAll("MyLines")
+                  .data(newdata)
+                  .enter()
+                  .append("path")
+                  .attr("d",function(d) {return line(d.values)})
+                  .attr("fill", "none")
+                  .attr("stroke", function(d) {
+                    if(d.key == "France") {return "red";}
+                    else if(d.key == "Italy") {return "orange";}
+                    else if(d.key == "US") {return "blue";}
+                    else if(d.key == "Vietnam") {return "green";}
+            })
+                  .style("stroke-width", "3");
+
+                  svg.append("circle").attr("cx",0).attr("cy",-90).attr("r", 7).style("fill", "red")
+                  svg.append("circle").attr("cx",0).attr("cy",-70).attr("r", 7).style("fill", "orange")
+                  svg.append("circle").attr("cx",0).attr("cy",-50).attr("r", 7).style("fill", "blue")
+                  svg.append("circle").attr("cx",0).attr("cy",-30).attr("r", 7).style("fill", "green")
+                  svg.append("text").attr("x", 10).attr("y", -90).text("France").style("font-size", "15px").attr("alignment-baseline","middle")
+                  svg.append("text").attr("x", 10).attr("y", -70).text("Italy").style("font-size", "15px").attr("alignment-baseline","middle")
+                  svg.append("text").attr("x", 10).attr("y", -50).text("US").style("font-size", "15px").attr("alignment-baseline","middle")
+                  svg.append("text").attr("x", 10).attr("y", -30).text("Vietnam").style("font-size", "15px").attr("alignment-baseline","middle")
+
+      }
+	})
+    
+
+	</script>
+   </body>
+ </html>  
