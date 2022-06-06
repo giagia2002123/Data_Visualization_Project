@@ -2,12 +2,16 @@
     <head>
         <title> Heat Wave Characteristics in the United States </title>
         <script src="https://d3js.org/d3.v4.min.js"></script>
-        <link rel="stylesheet" href="CSS files\Percentage of whole sample reporting specific emotions in relation to climate change.css"/>
+        <link rel="stylesheet" href="CSS files\Heat Wave Characteristics in the United States.css"/>
     </head>
 
     <body>
         <h1 style="text-align:center; font-size:12x; font-family:arial; color:black; margin:10px;"> Heat Wave Characteristics in the United States </h1>
+
+        <div id="BarChart1"></div>
         
+        <div id="Barchart2"></div>
+
         <script type="text/javascript">
             var rowConverter = function(d){
                 return {
@@ -24,9 +28,256 @@
                 }
                 else {
                     console.table(data);
+
+                    var margin = {top: 50, right: 30, bottom: 80, left: 200},
+                    width = 700 - margin.left - margin.right,
+                    height = 420 - margin.top - margin.bottom;
+
+                    var svg1 = d3.select("#Barchart1")
+                                .append("svg")
+                                .attr("width", width + margin.left + margin.right)
+                                .attr("height", height + margin.top + margin.bottom)
+                                .append("g")
+                                .attr("transform","translate(" + margin.left + "," + margin.top + ")");
+
+                    var colorScale = d3.scaleThreshold()
+                                .domain([d3.min(data, function (d) {return d.Frequency}),d3.max(data, function (d) {return d.Frequency})])
+                                .range(['#ffeda0','#feb24c','#f03b20']);
                     
+                    var x = d3.scaleBand()
+                                .range([ 0, width ])
+                                .domain(data.map(function(d) { return d.Decade; }))
+                                .padding(0.2);
+                                svg1.append("g")
+                                .attr("transform", "translate(0," + height + ")")
+                                .call(d3.axisBottom(x))
+                                
+                    var y = d3.scaleLinear()
+                              .domain([0, d3.max(data, function(d) {return d.Frequency;})])
+                              .range([ height, 0]);
+                            svg1.append("g")
+                            .call(d3.axisLeft(y));
+                            
+                            svg1.selectAll("MyBar")
+                            .data(data)
+                            .enter()
+                            .append("rect")
+                            .attr("x", function(d) { return x(d.Decade); })
+                            .attr("y", function(d) { return y(d.Frequency); })
+                            .attr("width", x.bandwidth())
+                            .attr("height", function(d) { return height - y(d.Frequency); })
+                            .attr("fill", function(d) { return colorScale(d.Frequency); })
+
+                            svg1.append('g')
+                                 .attr('class', 'grid')
+                                 .call(d3.axisLeft()
+                                 .scale(y)
+                                 .tickSize(-width, 0, 0)
+                                 .tickFormat(''))
+
+                            svg1.append("text")
+                                .attr("text-anchor", "middle")
+                                .attr("transform", "rotate(-90)")
+                                .attr("x", - margin.top - 100)
+                                .attr("y", - margin.right - 20)
+                                .style("font-weight", "bold")
+                                .style("font-family", "Arial")
+                                .style("font-size", 15)
+                                .text("Frequency(average number of heat waves per year)");
+                            
+                            svg1.append("text")
+                                    .attr("x", width/2 )
+                                    .attr("y", height - 15 + 80)
+                                    .attr("text-anchor", "middle")
+                                    .style("font-weight", "bold")
+                                    .style("font-family", "Arial")
+                                    .style("font-size", 38)
+                                    .text("Years");
+
+                    var svg2 = d3.select("#Barchart1")
+                                .append("svg")
+                                .attr("width", width + margin.left + margin.right)
+                                .attr("height", height + margin.top + margin.bottom)
+                                .append("g")
+                                .attr("transform","translate(" + margin.left + "," + margin.top + ")");
+
+                    var colorScale = d3.scaleThreshold()
+                                .domain([d3.min(data, function (d) {return d.Duration}),d3.max(data, function (d) {return d.Duration})])
+                                .range(['#ffeda0','#feb24c','#f03b20']);
+
+                    var x = d3.scaleBand()
+                                .range([ 0, width ])
+                                .domain(data.map(function(d) { return d.Decade; }))
+                                .padding(0.2);
+                                svg2.append("g")
+                                .attr("transform", "translate(0," + height + ")")
+                                .call(d3.axisBottom(x))
+                                
+                    var y = d3.scaleLinear()
+                              .domain([0, d3.max(data, function(d) {return d.Duration;})])
+                              .range([ height, 0]);
+                            svg2.append("g")
+                            .call(d3.axisLeft(y));
+                            
+                            svg2.selectAll("MyBar")
+                            .data(data)
+                            .enter()
+                            .append("rect")
+                            .attr("x", function(d) { return x(d.Decade); })
+                            .attr("y", function(d) { return y(d.Duration); })
+                            .attr("width", x.bandwidth())
+                            .attr("height", function(d) { return height - y(d.Duration); })
+                            .attr("fill", function(d) { return colorScale(d.Duration); })
+
+                            svg2.append('g')
+                                 .attr('class', 'grid')
+                                 .call(d3.axisLeft()
+                                 .scale(y)
+                                 .tickSize(-width, 0, 0)
+                                 .tickFormat(''))
+
+                            svg2.append("text")
+                                .attr("text-anchor", "middle")
+                                .attr("transform", "rotate(-90)")
+                                .attr("x", - margin.top - 100)
+                                .attr("y", - margin.right - 20)
+                                .style("font-weight", "bold")
+                                .style("font-family", "Arial")
+                                .style("font-size", 15)
+                                .text("Duration(length of heat waves)(days)");
+                            
+                            svg2.append("text")
+                                    .attr("x", width/2 )
+                                    .attr("y", height - 15 + 80)
+                                    .attr("text-anchor", "middle")
+                                    .style("font-weight", "bold")
+                                    .style("font-family", "Arial")
+                                    .style("font-size", 38)
+                                    .text("Years");
+
+                    var svg3 = d3.select("#Barchart2")
+                                .append("svg")
+                                .attr("width", width + margin.left + margin.right)
+                                .attr("height", height + margin.top + margin.bottom)
+                                .append("g")
+                                .attr("transform","translate(" + margin.left + "," + margin.top + ")");
+
+                    var colorScale = d3.scaleThreshold()
+                                .domain([d3.min(data, function (d) {return d.Season}),d3.max(data, function (d) {return d.Season})])
+                                .range(['#ffeda0','#feb24c','#f03b20']);
                     
-                   
+                    var x = d3.scaleBand()
+                                .range([ 0, width ])
+                                .domain(data.map(function(d) { return d.Decade; }))
+                                .padding(0.2);
+                                svg3.append("g")
+                                .attr("transform", "translate(0," + height + ")")
+                                .call(d3.axisBottom(x))
+                                
+                    var y = d3.scaleLinear()
+                              .domain([0, d3.max(data, function(d) {return d.Season;})])
+                              .range([ height, 0]);
+                            svg3.append("g")
+                            .call(d3.axisLeft(y));
+                            
+                            svg3.selectAll("MyBar")
+                            .data(data)
+                            .enter()
+                            .append("rect")
+                            .attr("x", function(d) { return x(d.Decade); })
+                            .attr("y", function(d) { return y(d.Season); })
+                            .attr("width", x.bandwidth())
+                            .attr("height", function(d) { return height - y(d.Season); })
+                            .attr("fill", function(d) { return colorScale(d.Season); })
+
+                            svg3.append('g')
+                                 .attr('class', 'grid')
+                                 .call(d3.axisLeft()
+                                 .scale(y)
+                                 .tickSize(-width, 0, 0)
+                                 .tickFormat(''))
+
+                            svg3.append("text")
+                                .attr("text-anchor", "middle")
+                                .attr("transform", "rotate(-90)")
+                                .attr("x", - margin.top - 100)
+                                .attr("y", - margin.right - 20)
+                                .style("font-weight", "bold")
+                                .style("font-family", "Arial")
+                                .style("font-size", 14)
+                                .text("Season(average length of annual heat wave season)(days)");
+                            
+                            svg3.append("text")
+                                    .attr("x", width/2 )
+                                    .attr("y", height - 15 + 80)
+                                    .attr("text-anchor", "middle")
+                                    .style("font-weight", "bold")
+                                    .style("font-family", "Arial")
+                                    .style("font-size", 38)
+                                    .text("Years");
+
+                    var svg4 = d3.select("#Barchart2")
+                                .append("svg")
+                                .attr("width", width + margin.left + margin.right)
+                                .attr("height", height + margin.top + margin.bottom)
+                                .append("g")
+                                .attr("transform","translate(" + margin.left + "," + margin.top + ")");
+
+                    var colorScale = d3.scaleThreshold()
+                                .domain([d3.min(data, function (d) {return d.Intensity}),d3.max(data, function (d) {return d.Intensity})])
+                                .range(['#ffeda0','#feb24c','#f03b20']);
+
+                    var x = d3.scaleBand()
+                                .range([ 0, width ])
+                                .domain(data.map(function(d) { return d.Decade; }))
+                                .padding(0.2);
+                                svg4.append("g")
+                                .attr("transform", "translate(0," + height + ")")
+                                .call(d3.axisBottom(x))
+                                
+                    var y = d3.scaleLinear()
+                              .domain([0, d3.max(data, function(d) {return d.Intensity;})])
+                              .range([ height, 0]);
+                            svg4.append("g")
+                            .call(d3.axisLeft(y));
+                            
+                            svg4.selectAll("MyBar")
+                            .data(data)
+                            .enter()
+                            .append("rect")
+                            .attr("x", function(d) { return x(d.Decade); })
+                            .attr("y", function(d) { return y(d.Intensity); })
+                            .attr("width", x.bandwidth())
+                            .attr("height", function(d) { return height - y(d.Intensity); })
+                            .attr("fill", function(d) { return colorScale(d.Intensity); })
+
+                            svg4.append('g')
+                                 .attr('class', 'grid')
+                                 .call(d3.axisLeft()
+                                 .scale(y)
+                                 .tickSize(-width, 0, 0)
+                                 .tickFormat(''))
+
+                            svg4.append("text")
+                                .attr("text-anchor", "middle")
+                                .attr("transform", "rotate(-90)")
+                                .attr("x", - margin.top - 100)
+                                .attr("y", - margin.right - 20)
+                                .style("font-weight", "bold")
+                                .style("font-family", "Arial")
+                                .style("font-size", 20)
+                                .text("Intensity(°F)");
+                            
+                            svg4.append("text")
+                                    .attr("x", width/2 )
+                                    .attr("y", height - 15 + 80)
+                                    .attr("text-anchor", "middle")
+                                    .style("font-weight", "bold")
+                                    .style("font-family", "Arial")
+                                    .style("font-size", 38)
+                                    .text("Years");
+
+
                 }
             });
 
