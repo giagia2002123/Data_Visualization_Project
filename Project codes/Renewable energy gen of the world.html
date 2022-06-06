@@ -1,0 +1,139 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <h1 style="text-align:center; font-size:12x; font-family:arial; color:black; margin:10px;"> Renewable energy gen of the world </h1>
+        <h2 style="text-align:center; font-size:12x; font-family:arial; color:black; margin:10px;"> There’s 25 times more solar and nearly 5 times more wind electricity produced today than ten years ago </h2>
+        <title> Levelized cost of every energy types in the world </title>
+        <script src="https://d3js.org/d3.v4.min.js"></script>
+    </head>
+    
+    <body>
+        
+        <div id="LineGraph"></div>
+
+        <script type="text/javascript">
+        
+            var rowConverter = function(d) {
+                return{
+                    World : d.Entity,
+                    Time : d.Year,
+                    Solar : d["Solar Generation - TWh"],
+                    Wind : d["Wind Generation - TWh"],
+                    Hydro : d["Hydro Generation - TWh"],
+                    Other : d["Geo Biomass Other - TWh"]
+                }
+            };
+
+            d3.csv("https://raw.githubusercontent.com/GordonHuy/Data_Visualization_Project/master/Datasets/renewable%20energy%20gen%20of%20the%20world.csv", rowConverter, function(error, data) {
+                if (error) {
+                    console.log(error);
+                }
+                else {
+                    console.table(data);
+
+                    var margin = {top: 120, right: 50, bottom: 100, left: 200},
+                    width = 1500 - margin.left - margin.right,
+                    height = 800 - margin.top - margin.bottom;
+
+                    var svg = d3.select("#LineGraph")
+                    .append("svg")
+                    .attr("width", width + margin.left + margin.right)
+                    .attr("height", height + margin.top + margin.bottom)
+                    .append("g")
+                    .attr("transform","translate(" + margin.left + "," + margin.top + ")");
+
+                    var x = d3.scaleLinear()
+                    .domain(d3.extent(data, function(d) { return d.Time; }))
+                    .range([ 0, width ]);
+                    svg.append("g")
+                    .attr("transform", "translate(0," + height + ")")
+                    .call(d3.axisBottom(x))
+                    .call(d3.axisBottom(x).ticks(30));
+
+                    var y = d3.scaleLinear()
+                    .domain([0, 5000])
+                    .range([ height, 0 ]);
+                    svg.append("g")
+                    .call(d3.axisLeft(y))
+                                    
+                    svg.append("path")
+                    .datum(data)
+                    .attr("fill", "none")
+                    .attr("stroke", "red")
+                    .attr("stroke-width", 2)
+                    .attr("d", d3.line()
+                    .x(function(d) { return x(d.Time) })
+                    .y(function(d) { return y(d.Solar) }) 
+                    )
+
+                    svg.append("path")
+                    .datum(data)
+                    .attr("fill", "none")
+                    .attr("stroke", "orange")
+                    .attr("stroke-width", 2)
+                    .attr("d", d3.line()
+                    .x(function(d) { return x(d.Time) })
+                    .y(function(d) { return y(d.Hydro) }) 
+                    )
+
+                    svg.append("path")
+                    .datum(data)
+                    .attr("fill", "none")
+                    .attr("stroke", "yellow")
+                    .attr("stroke-width", 2)
+                    .attr("d", d3.line()
+                    .x(function(d) { return x(d.Time) })
+                    .y(function(d) { return y(d.Wind) }) 
+                    )
+
+                    svg.append("path")
+                    .datum(data)
+                    .attr("fill", "none")
+                    .attr("stroke", "green")
+                    .attr("stroke-width", 2)
+                    .attr("d", d3.line()
+                    .x(function(d) { return x(d.Time) })
+                    .y(function(d) { return y(d.Other) }) 
+                    )
+
+                    svg.append('g')
+                    .attr('class', 'grid')
+                    .call(d3.axisLeft()
+                    .scale(y)
+                    .tickSize(-width, 0, 0)
+                    .tickFormat(''))
+
+                    svg.append("text")
+                    .attr("x", width/2 )
+                    .attr("y", height - 15 + 80)
+                    .attr("text-anchor", "middle")
+                    .style("font-weight", "bold")
+                    .style("font-family", "Arial")
+                    .style("font-size", 38)
+                    .text("Years");
+
+                    svg.append("text")
+                    .attr("text-anchor", "middle")
+                    .attr("transform", "rotate(-90)")
+                    .attr("x", - margin.top - 50)
+                    .attr("y", - margin.right - 10)
+                    .style("font-weight", "bold")
+                    .style("font-family", "Arial")
+                    .style("font-size", 30)
+                    .text("Terawatt-hour(TWh)");
+
+                    svg.append("circle").attr("cx",0).attr("cy",-90).attr("r", 7).style("fill", "red")
+                    svg.append("circle").attr("cx",0).attr("cy",-70).attr("r", 7).style("fill", "orange")
+                    svg.append("circle").attr("cx",0).attr("cy",-50).attr("r", 7).style("fill", "yellow")
+                    svg.append("circle").attr("cx",0).attr("cy",-30).attr("r", 7).style("fill", "green")
+                    svg.append("text").attr("x", 10).attr("y", -90).text("Solar Generation").style("font-size", "15px").attr("alignment-baseline","middle")
+                    svg.append("text").attr("x", 10).attr("y", -70).text("Wind Generation").style("font-size", "15px").attr("alignment-baseline","middle")
+                    svg.append("text").attr("x", 10).attr("y", -50).text("Hydro Generation").style("font-size", "15px").attr("alignment-baseline","middle")
+                    svg.append("text").attr("x", 10).attr("y", -30).text("Other").style("font-size", "15px").attr("alignment-baseline","middle")
+
+                }
+            })
+
+        </script>
+    </body>
+</html>
