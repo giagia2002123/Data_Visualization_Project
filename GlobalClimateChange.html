@@ -1,0 +1,217 @@
+<html>
+
+   <head>
+    <title> Lab 4 </title>
+	<script src="https://d3js.org/d3.v4.min.js"></script>
+   </head>
+	
+   <body>
+    <div style="text-align: center;">
+        <h1>Data Science And Data Visulization</h1>
+        <h2>Project</h2>
+        <h2>The Changed In Global Climate</h3>
+    </div>
+    <p>The following bar chart represent the changed in Celsius Degree of the world temperature separated by year</p>
+	
+	<div id="d3-container"></div>
+    <button id="bt1">Prev</button>
+    <button id="bt2">Next</button>
+	<svg width="1200" height="800"></svg>
+	<script type="text/javascript">
+    var body = d3.select("body");
+    body.append("p").html("Year -- Degree Changed<br>");
+    var index = 0;
+		  
+    var rowConverter = function(d) {
+	   return{ 
+	      year : parseInt(d["Year (Base Period: 1901-2000)"]),
+          value : parseFloat(d["Value (Units: Degrees Celsius)"])
+       };
+	}
+
+    var svg = d3.select("svg"),
+             margin = 200,
+             w = svg.attr("width") - margin,
+             h = svg.attr("height") - margin
+
+	d3.csv("https://raw.githubusercontent.com/GordonHuy/Data_Visualization_Project/master/Datasets/(Global%20Earth%20Temperature%20Anomalies)%20Global%20Land%20and%20Ocean%20Temperature%20Anomalies.csv", rowConverter, function(error, data) {
+        if (error) {
+	        console.log(error);
+        }
+        else {
+            var dataset = data.slice(index, index + 20);
+            console.log(dataset);
+            
+
+        function update(newData) {
+            var bar = body.selectAll(".bar")
+              .data(newData, d => d.year);
+        
+            bar.exit().remove();
+        
+            bar.enter()
+              .append("p")
+              .attr("class", "bar")
+              .merge(bar)
+              .html(d => d.year + " -- " + d.value)
+        }
+
+        var xScale = d3.scaleBand()
+                        .domain(dataset.map((d) => d.year))
+                        .range([0, w])
+                        .padding(0.04);
+
+        var yScale = d3.scaleLinear()
+                        .domain([d3.min(dataset, function(d) { return d.value - 0.4; }), d3.max(dataset, function(d) { return d.value; })])
+                        .range([h, 0]);
+        
+        var aScale = d3.scaleSqrt()
+                    .domain([d3.min(data, (d => d.value)), d3.max(data, (d) => d.value)])
+                    .range([0, 365]);
+
+        var g = svg.append("g")
+                    .attr("transform", "translate(" + 100 + "," + 100 + ")");
+
+        g.append("g")
+            .attr("class", "xAxis")
+            .attr("transform", "translate(0," + h + ")")
+            .call(d3.axisBottom(xScale));
+        
+            
+        g.append("g")
+            .attr("class", "yAxis")
+            .call(d3.axisLeft(yScale).tickFormat(function(d){
+                return d + " Celsius";
+            }).ticks(10))
+            .append("text")
+            .attr("y", 6)
+            .attr("dy", "0.71em")
+            .attr("text-anchor", "end")
+            .text("value");
+       
+        g.selectAll(".bar")
+            .data(dataset)
+            // .transition()
+            // .duration(1000)
+            // .ease(d3.easeLinear)
+            .enter().append("rect")
+            .attr("class", "bar")
+            .attr("x", function(d) { return xScale(d.year); })
+            .attr("y", function(d) { return yScale(d.value); })
+            .attr("width", xScale.bandwidth())
+            .attr("height", function(d) { return h - yScale(d.value); })
+            .attr("fill", function(d) {
+                return "rgb(0, 0, " + aScale(d.value) + ")";
+            });
+
+        d3.select("#bt2")
+            .on("click", function() {
+                if(index + 20 < 124) {
+                    index += 20;
+                }
+                dataset = data.slice(index, index + 20);
+                
+                update(dataset);
+
+                xScale = d3.scaleBand()
+                        .domain(dataset.map((d) => d.year))
+                        .range([0, w])
+                        .round(true)
+                        .padding(0.04);
+
+                yScale = d3.scaleLinear()
+                                .domain([d3.min(dataset, function(d) { return d.value - 0.4; }), d3.max(dataset, function(d) { return d.value; })])
+                                .range([h, 0]);
+                
+
+                g.selectAll("g.xAxis")
+                    .transition().duration(1000)
+                    .attr("transform", "translate(0," + h + ")")
+                    .call(d3.axisBottom(xScale));
+
+                g.selectAll("g.yAxis")
+                    .call(d3.axisLeft(yScale).tickFormat(function(d){
+                        return d + " Celsius";
+                    }).ticks(10))
+                    .append("text")
+                    .attr("y", 6)
+                    .attr("dy", "0.71em")
+                    .attr("text-anchor", "end")
+                    .text("value");
+
+                g.selectAll(".bar")
+                .data(dataset)
+                // .transition()
+                // .duration(1000)
+                // .ease(d3.easeLinear)
+                .enter().append("rect")
+                .attr("class", "bar")
+                .attr("x", function(d) { return xScale(d.year); })
+                .attr("y", function(d) { return yScale(d.value); })
+                .attr("width", xScale.bandwidth())
+                .attr("height", function(d) { return h - yScale(d.value); })
+                .attr("fill", function(d) {
+                    return "rgb(0, 0, " + aScale(d.value) + ")";
+                });
+            });
+
+        d3.select("#bt1")
+            .on("click", function() {
+                if(index >= 20) {
+                    dataset = data.slice(index - 20, index);
+                    index -= 20;
+                } else {
+                    dataset = data.slice(0, index + 20)
+                }
+
+                update(dataset);
+
+                xScale = d3.scaleBand()
+                        .domain(dataset.map((d) => d.year))
+                        .range([0, w])
+                        .round(true)
+                        .padding(0.04);
+
+                yScale = d3.scaleLinear()
+                                .domain([d3.min(dataset, function(d) { return d.value - 0.4; }), d3.max(dataset, function(d) { return d.value; })])
+                                .range([h, 0]);
+                
+                g.selectAll("g.xAxis")
+                    .transition().duration(1000)
+                    .attr("transform", "translate(0," + h + ")")
+                    .call(d3.axisBottom(xScale));
+
+                g.selectAll("g.yAxis")
+                    .call(d3.axisLeft(yScale).tickFormat(function(d){
+                        return d + " Celsius";
+                    }).ticks(10))
+                    .append("text")
+                    .attr("y", 6)
+                    .attr("dy", "0.71em")
+                    .attr("text-anchor", "end")
+                    .text("value");
+
+                g.selectAll(".bar")
+                .data(dataset)
+                // .transition()
+                // .duration(1000)
+                // .ease(d3.easeLinear)
+                .enter().append("rect")
+                .attr("class", "bar")
+                .attr("x", function(d) { return xScale(d.year); })
+                .attr("y", function(d) { return yScale(d.value); })
+                .attr("width", xScale.bandwidth())
+                .attr("height", function(d) { return h - yScale(d.value); })
+                .attr("fill", function(d) {
+                    return "rgb(0, 0, " + aScale(d.value) + ")";
+                });
+            });
+
+
+	   }
+	})
+    
+
+	</script>
+   </body>
+ </html>  
