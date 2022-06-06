@@ -1,8 +1,8 @@
 <!DOCTYPE html>
 <html>
     <head>
-        <h1 style="text-align:center; font-size:10x; font-family:arial; color:black; margin:10px;"> Number of recorded natural disaster events </h1>
-        <title> Number of recorded natural disaster events </title>
+        <h1 style="text-align:center; font-size:12x; font-family:arial; color:black; margin:10px;"> Change in total greenhouse gas emissions </h1>
+        <title> Change in total greenhouse gas emissions </title>
         <script src="https://d3js.org/d3.v4.min.js"></script>
     </head>
     
@@ -14,13 +14,13 @@
         
             var rowConverter = function(d) {
                 return{
-                    Disasters : d.Entity,
+                    Country : d.Entity,
                     Time : d.Year,
-                    Number : d["Number of disasters (EMDAT (2020))"]
+                    Emissions : d["Total including LUCF"]
                 }
             };
 
-            d3.csv("https://raw.githubusercontent.com/GordonHuy/Data_Visualization_Project/master/Datasets/number-of-natural-disaster-events.csv", rowConverter, function(error, data) {
+            d3.csv("https://raw.githubusercontent.com/GordonHuy/Data_Visualization_Project/master/Datasets/Total%20greenhouse%20gas%20emissions.csv", rowConverter, function(error, data) {
                 if (error) {
                     console.log(error);
                 }
@@ -32,7 +32,7 @@
                     height = 800 - margin.top - margin.bottom;
 
                     var newdata = d3.nest()
-                        .key(function(d) {return d.Disasters})
+                        .key(function(d) {return d.Country})
                         .entries(data);
                     
                     console.table(newdata)
@@ -52,13 +52,13 @@
                                     .call(d3.axisBottom(xScale).ticks(20));
 
                     var yScale = d3.scaleLinear()
-                                    .domain([0, d3.max(data, function(d) { return +d.Number;})])
+                                    .domain([0, d3.max(data, function(d) { return +d.Emissions;})])
                                     .range([ height, 0]);
                     var yAxis = svg.append("g")
                                     .call(d3.axisLeft(yScale));
 
                     var line = d3.line().x(function(d) { return xScale(d.Time) })
-                                        .y(function(d) { return yScale(d.Number) })
+                                        .y(function(d) { return yScale(d.Emissions) })
 
                                 svg.append("text")
                                     .attr("x", width/2 )
@@ -77,7 +77,7 @@
                                 .style("font-weight", "bold")
                                 .style("font-family", "Arial")
                                 .style("font-size", 38)
-                                .text("Number of disasters");
+                                .text("Total greenhouse gas emissions");
 
                                  svg.append("g")
                                     .selectAll("MyLines")
@@ -87,11 +87,9 @@
                                     .attr("d",function(d) {return line(d.values)})
                                     .attr("fill", "none")
                                     .attr("stroke", function(d) {
-                                        if(d.key == "Extreme temperature") {return "red";}
-                                        else if(d.key == "Extreme weather") {return "orange";}
-                                        else if(d.key == "Flood") {return "blue";}
-                                        else if(d.key == "Wildfire"){return "green";}
-                                        else if(d.key == "All natural disasters"){return "black"}
+                                        if(d.key == "World") {return "red";}
+                                        else if(d.key == "China") {return "blue";}
+                                        else if(d.key == "India") {return "green";}
                                         
                                     })
                                     .style("stroke-width", "3");
@@ -104,15 +102,11 @@
                                         .tickFormat(''))
 
                                     svg.append("circle").attr("cx",0).attr("cy",-90).attr("r", 7).style("fill", "red")
-                                    svg.append("circle").attr("cx",0).attr("cy",-70).attr("r", 7).style("fill", "orange")
-                                    svg.append("circle").attr("cx",0).attr("cy",-50).attr("r", 7).style("fill", "blue")
-                                    svg.append("circle").attr("cx",0).attr("cy",-30).attr("r", 7).style("fill", "green")
-                                    svg.append("circle").attr("cx",0).attr("cy",-10).attr("r", 7).style("fill", "black")
-                                    svg.append("text").attr("x", 10).attr("y", -90).text("Extreme temperature").style("font-size", "15px").attr("alignment-baseline","middle")
-                                    svg.append("text").attr("x", 10).attr("y", -70).text("Extreme weather").style("font-size", "15px").attr("alignment-baseline","middle")
-                                    svg.append("text").attr("x", 10).attr("y", -50).text("Flood").style("font-size", "15px").attr("alignment-baseline","middle")
-                                    svg.append("text").attr("x", 10).attr("y", -30).text("Wildfire").style("font-size", "15px").attr("alignment-baseline","middle")
-                                    svg.append("text").attr("x", 10).attr("y", -10).text("All natural disasters").style("font-size", "15px").attr("alignment-baseline","middle")
+                                    svg.append("circle").attr("cx",0).attr("cy",-70).attr("r", 7).style("fill", "blue")
+                                    svg.append("circle").attr("cx",0).attr("cy",-50).attr("r", 7).style("fill", "green")
+                                    svg.append("text").attr("x", 10).attr("y", -90).text("World").style("font-size", "15px").attr("alignment-baseline","middle")
+                                    svg.append("text").attr("x", 10).attr("y", -70).text("China").style("font-size", "15px").attr("alignment-baseline","middle")
+                                    svg.append("text").attr("x", 10).attr("y", -50).text("India").style("font-size", "15px").attr("alignment-baseline","middle")
                                     
                 }
             })
