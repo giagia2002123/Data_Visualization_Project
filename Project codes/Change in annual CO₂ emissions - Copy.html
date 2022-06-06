@@ -2,7 +2,7 @@
 <html>
     <head>
         <h1 style="text-align:center; font-size:12x; font-family:arial; color:black; margin:10px;"> Change in annual CO₂ emissions </h1>
-        <h2 style="text-align:center; font-size:12x; font-family:arial; color:black; margin:10px;"> The domestic CO2 output of rich countries is falling without a major recession. Since the year 2000, the EU as a whole shows a 21% decrease, Italy 28%, the UK 35%, Denmark 43% </h2>
+        <h2 style="text-align:center; font-size:12x; font-family:arial; color:black; margin:10px;"> The domestic CO2 output of rich countries is falling without a major recession. Since the year 2000, Italy 28%, the UK 35%, Denmark 43% decrease </h2>
         <title> Change in annual CO₂ emissions </title>
         <script src="https://d3js.org/d3.v4.min.js"></script>
     </head>
@@ -48,14 +48,14 @@
                     var xScale = d3.scaleLinear()
                                     .domain(d3.extent(data, function(d) { return d.Time; }))
                                     .range([ 0, width]);
-                                svg.append("g")
+                    var xAxis = svg.append("g")
                                     .attr("transform", "translate(0," + height + ")")
                                     .call(d3.axisBottom(xScale).ticks(20));
 
                     var yScale = d3.scaleLinear()
                                     .domain([0, d3.max(data, function(d) { return +d.CO2LvL;})])
                                     .range([ height, 0]);
-                                svg.append("g")
+                    var yAxis = svg.append("g")
                                     .call(d3.axisLeft(yScale));
 
                     var line = d3.line().x(function(d) { return xScale(d.Time) })
@@ -80,16 +80,19 @@
                                 .style("font-size", 38)
                                 .text("Annual CO2 emissions");
 
-                                svg.selectAll("MyLines")
+                    var LineChart = svg.append("g")
+
+                           LineChart.selectAll("MyLines")
                                     .data(newdata)
                                     .enter()
                                     .append("path")
                                     .attr("d",function(d) {return line(d.values)})
                                     .attr("fill", "none")
                                     .attr("stroke", function(d) {
-                                        if(d.key == "World") {return "red";}
-                                        else if(d.key == "United States") {return "blue";}
-                                        else if(d.key == "United Kingdom") {return "green"; }
+                                        if(d.key == "Italy") {return "red";}
+                                        else if(d.key == "Denmark") {return "blue";}
+                                        else if(d.key == "United Kingdom") {return "green";}
+                                        
                                     })
                                     .style("stroke-width", "3");
 
