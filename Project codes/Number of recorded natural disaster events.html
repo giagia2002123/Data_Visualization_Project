@@ -1,0 +1,122 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <h1 style="text-align:center; font-size:10x; font-family:arial; color:black; margin:10px;"> Number of recorded natural disaster events (take extreme temperature. extreme weather, flood, and wildfire) </h1>
+        <title> Number of recorded natural disaster events </title>
+        <script src="https://d3js.org/d3.v4.min.js"></script>
+    </head>
+    
+    <body>
+        
+        <div id="LineGraph"></div>
+
+        <script type="text/javascript">
+        
+            var rowConverter = function(d) {
+                return{
+                    Disasters : d.Entity,
+                    Time : d.Year,
+                    Number : d["Number of disasters (EMDAT (2020))"]
+                }
+            };
+
+            d3.csv("https://raw.githubusercontent.com/GordonHuy/Data_Visualization_Project/master/Datasets/number-of-natural-disaster-events.csv", rowConverter, function(error, data) {
+                if (error) {
+                    console.log(error);
+                }
+                else {
+                    console.table(data);
+
+                    var margin = {top: 100, right: 50, bottom: 100, left: 200},
+                    width = 1500 - margin.left - margin.right,
+                    height = 800 - margin.top - margin.bottom;
+
+                    var newdata = d3.nest()
+                        .key(function(d) {return d.Disasters})
+                        .entries(data);
+                    
+                    console.table(newdata)
+
+                    var svg = d3.select("#LineGraph")
+                                .append("svg")
+                                .attr("width", width + margin.left + margin.right)
+                                .attr("height", height + margin.top + margin.bottom)
+                                .append("g")
+                                .attr("transform", "translate(" + margin.left + "," + margin.top + ")");
+
+                    var xScale = d3.scaleLinear()
+                                    .domain(d3.extent(data, function(d) { return d.Time; }))
+                                    .range([ 0, width]);
+                    var xAxis = svg.append("g")
+                                    .attr("transform", "translate(0," + height + ")")
+                                    .call(d3.axisBottom(xScale).ticks(20));
+
+                    var yScale = d3.scaleLinear()
+                                    .domain([0, d3.max(data, function(d) { return +d.Number;})])
+                                    .range([ height, 0]);
+                    var yAxis = svg.append("g")
+                                    .call(d3.axisLeft(yScale));
+
+                    var line = d3.line().x(function(d) { return xScale(d.Time) })
+                                        .y(function(d) { return yScale(d.Number) })
+
+                                svg.append("text")
+                                    .attr("x", width/2 )
+                                    .attr("y", height - 15 + 80)
+                                    .attr("text-anchor", "middle")
+                                    .style("font-weight", "bold")
+                                    .style("font-family", "Arial")
+                                    .style("font-size", 38)
+                                    .text("Years");
+
+                                svg.append("text")
+                                .attr("text-anchor", "middle")
+                                .attr("transform", "rotate(-90)")
+                                .attr("x", - margin.top - 200)
+                                .attr("y", - margin.right - 50)
+                                .style("font-weight", "bold")
+                                .style("font-family", "Arial")
+                                .style("font-size", 38)
+                                .text("Number of disasters");
+
+                                 svg.append("g")
+                                    .selectAll("MyLines")
+                                    .data(newdata)
+                                    .enter()
+                                    .append("path")
+                                    .attr("d",function(d) {return line(d.values)})
+                                    .attr("fill", "none")
+                                    .attr("stroke", function(d) {
+                                        if(d.key == "Extreme temperature") {return "red";}
+                                        else if(d.key == "Extreme weather") {return "orange";}
+                                        else if(d.key == "Flood") {return "blue";}
+                                        else if(d.key == "Wildfire"){return "green";}
+                                        else if(d.key == "All natural disasters"){return "black"}
+                                        
+                                    })
+                                    .style("stroke-width", "3");
+
+                                    svg.append('g')
+                                        .attr('class', 'grid')
+                                        .call(d3.axisLeft()
+                                        .scale(yScale)
+                                        .tickSize(-width, 0, 0)
+                                        .tickFormat(''))
+
+                                    svg.append("circle").attr("cx",0).attr("cy",-90).attr("r", 7).style("fill", "red")
+                                    svg.append("circle").attr("cx",0).attr("cy",-70).attr("r", 7).style("fill", "orange")
+                                    svg.append("circle").attr("cx",0).attr("cy",-50).attr("r", 7).style("fill", "blue")
+                                    svg.append("circle").attr("cx",0).attr("cy",-30).attr("r", 7).style("fill", "green")
+                                    svg.append("circle").attr("cx",0).attr("cy",-10).attr("r", 7).style("fill", "black")
+                                    svg.append("text").attr("x", 10).attr("y", -90).text("Extreme temperature").style("font-size", "15px").attr("alignment-baseline","middle")
+                                    svg.append("text").attr("x", 10).attr("y", -70).text("Extreme weather").style("font-size", "15px").attr("alignment-baseline","middle")
+                                    svg.append("text").attr("x", 10).attr("y", -50).text("Flood").style("font-size", "15px").attr("alignment-baseline","middle")
+                                    svg.append("text").attr("x", 10).attr("y", -30).text("Wildfire").style("font-size", "15px").attr("alignment-baseline","middle")
+                                    svg.append("text").attr("x", 10).attr("y", -10).text("All natural disasters").style("font-size", "15px").attr("alignment-baseline","middle")
+                                    
+                }
+            })
+
+        </script>
+    </body>
+</html>
