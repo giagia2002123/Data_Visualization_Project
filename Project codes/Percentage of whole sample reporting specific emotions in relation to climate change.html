@@ -2,7 +2,7 @@
     <head>
         <title> Percentage of whole sample reporting specific emotions in relation to climate change </title>
         <script src="https://d3js.org/d3.v4.min.js"></script>
-        <link rel="stylesheet" href="CSS files\Percentage (%) of whole sample reporting specific negative beliefs about climate change.css"/>
+        <link rel="stylesheet" href="CSS files\Percentage of whole sample reporting specific negative beliefs about climate change.css"/>
     </head>
 
     <style>
@@ -66,8 +66,8 @@
                     return table;
                 }
                 
-                d3.csv('https://raw.githubusercontent.com/GordonHuy/Data_Visualization_Project/master/Datasets/Percentage%20of%20whole%20sample%20reporting%20specific%20emotions%20in%20relation%20to%20climate%20change.csv',function (data) {
-                    var columns = ['Thought about government reponse','All countries','Brazil','France','Finland','India','Nigeria','Philippines','Portugal','UK','USA']
+                d3.csv('https://raw.githubusercontent.com/GordonHuy/Data_Visualization_Project/master/Datasets/Percentage%20of%20the%20whole%20sample%20and%20by%20country%20of%20negative%20thoughts%20about%20climate%20change%20and%20beliefs%20about%20gorverment%20reponse%20about%20climatte%20change.csv',function (data) {
+                    var columns = ['Thoughts about climatte change','All countries','Brazil','France','Finland','India','Nigeria','Philippines','Portugal','UK','USA']
                     tabulate(data,columns)
                 })
 
@@ -76,7 +76,7 @@
         <script type="text/javascript">
             var rowConverter = function(d){
                 return {
-                    Thoughts : d["Thought about government reponse"],
+                    Thoughts : d["Thoughts about climatte change"],
                     Countries : d["All countries"],
                     Australia : d.Australia,
                     Brazil : d.Brazil,
@@ -90,7 +90,7 @@
                     USA : d["USA"]
                 }
             }
-            d3.csv("https://raw.githubusercontent.com/GordonHuy/Data_Visualization_Project/master/Datasets/Percentage%20of%20the%20whole%20sample%20and%20by%20county%20of%20beliefs%20about%20goverment%20reponse%20about%20climate%20change.csv", rowConverter, function(error, data){
+            d3.csv("https://raw.githubusercontent.com/GordonHuy/Data_Visualization_Project/master/Datasets/Percentage%20of%20the%20whole%20sample%20and%20by%20country%20of%20negative%20thoughts%20about%20climate%20change%20and%20beliefs%20about%20gorverment%20reponse%20about%20climatte%20change.csv", rowConverter, function(error, data){
                 if (error){
                     console.log(error);
                 }
