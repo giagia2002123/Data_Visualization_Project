@@ -2,119 +2,108 @@
 <html>
     <head>
         <h1 style="text-align:center; font-size:12x; font-family:arial; color:black; margin:10px;"> Change in annual CO₂ emissions </h1>
-        <h2 style="text-align:center; font-size:12x; font-family:arial; color:black; margin:10px;"> Between 2000 and 2010, greenhouse gas emissions had grown by 24%, almost three times as much as the increase in the previous decade </h2>
+        <h2 style="text-align:center; font-size:12x; font-family:arial; color:black; margin:10px;"> The domestic CO2 output of rich countries is falling without a major recession. Since the year 2000, Italy 28%, the UK 35%, Denmark 43% decrease </h2>
         <title> Change in annual CO₂ emissions </title>
         <script src="https://d3js.org/d3.v4.min.js"></script>
     </head>
     
     <body>
-        <div style="text-align: center;">
-            <div id="d3-CO2"> </div>
-        </div>
+        
+        <div id="LineGraph"></div>
 
         <script type="text/javascript">
-
-d3.csv("https://raw.githubusercontent.com/GordonHuy/Data_Visualization_Project/master/Datasets/Change%20in%20annual%20CO%E2%82%82%20emissions.csv", function(d) {
-    return {
-        country: d.Entity,
-        year: new Date(+d.Year, 0, 1),
-        emission_rate: d['Annual CO2 emissions']
-    };
-},
-    function(data) {
-        //console.log(data);
         
-        var nested = d3.nest()
-                        .key(function (d) { return d3.timeFormat('%Y')(d.year); })
-                        .rollup(function(leaves){
-                            return d3.sum(leaves, function(d){
-                                return d.emission_rate;
-                            });
-                        }).entries(data);
+            var rowConverter = function(d) {
+                return{
+                    Country : d.Entity,
+                    Time : d.Year,
+                    CO2LvL : d["Annual CO2 emissions"]
+                }
+            };
 
-        console.log(nested);
+            d3.csv("https://raw.githubusercontent.com/GordonHuy/Data_Visualization_Project/master/Datasets/Change%20in%20annual%20CO%E2%82%82%20emissions%20moded.csv", rowConverter, function(error, data) {
+                if (error) {
+                    console.log(error);
+                }
+                else {
+                    console.table(data);
 
-        const w = 1500;
-        const h = 1000;
-        var padding = 40;
+                    var margin = {top: 100, right: 50, bottom: 100, left: 200},
+                    width = 1500 - margin.left - margin.right,
+                    height = 800 - margin.top - margin.bottom;
 
-        var xScale = d3.scaleTime()
-                .domain(d3.extent(nested, function(d) { return d.key; }))
-                .range([padding, w - padding]);
+                    var newdata = d3.nest()
+                        .key(function(d) {return d.Country})
+                        .entries(data);
+                    
+                    console.table(newdata)
 
-        // var xScale = d3.scaleLinear()
-        //                 .domain([d3.min(data, (d) => d.year), d3.max(data, (d) => d.year)])
-        //                 .range([padding, w - padding]);
-        // var xScale = d3.scaleLinear()
-        //                 .domain([d3.min(data, (d) => d.year), d3.max(data, (d) => d.year)])
-        //                 .range([padding, w - padding]);
-            
-        var yScale = d3.scaleLinear()
-                    .domain([d3.min(nested, (d => d.value)), d3.max(nested, (d => d.value))])
-                    .range([h - padding , padding])
-        
-        // var aScale = d3.scaleSqrt()
-        //             .domain([d3.min(data, (d => d.emission_rate)), d3.max(data, (d) => d.emission_rate)])
-        //             .range([0, 1]);
+                    var svg = d3.select("#LineGraph")
+                                .append("svg")
+                                .attr("width", width + margin.left + margin.right)
+                                .attr("height", height + margin.top + margin.bottom)
+                                .append("g")
+                                .attr("transform", "translate(" + margin.left + "," + margin.top + ")");
 
-        var line = d3.line()
-                        .x((d) => xScale(d.key))
-                        .y((d) => yScale(d.value));
+                    var xScale = d3.scaleLinear()
+                                    .domain(d3.extent(data, function(d) { return d.Time; }))
+                                    .range([ 0, width]);
+                    var xAxis = svg.append("g")
+                                    .attr("transform", "translate(0," + height + ")")
+                                    .call(d3.axisBottom(xScale).ticks(20));
 
-        var svg = d3.select("#d3-CO2")
-                    .append("svg")
-                    .attr("width", w)
-                    .attr("height", h);
-        
-        // svg.selectAll('.temp-path')
-        //     .data(nested)
-        //     .enter()
-        //     .append('path')
-        //     .attr('d', function(d) {
-        //         return line(d.value)
-        //     })
-        //     .attr('fill', 'none')
-        //     .attr('stroke', 'blue');
+                    var yScale = d3.scaleLinear()
+                                    .domain([0, d3.max(data, function(d) { return +d.CO2LvL;})])
+                                    .range([ height, 0]);
+                    var yAxis = svg.append("g")
+                                    .call(d3.axisLeft(yScale));
 
-        svg.append("path")
-        .datum(nested)
-        .attr("fill", "none")
-        .attr("stroke", "steelblue")
-        .attr("stroke-width", 1.5)
-        .attr("d", d3.line()
-        .x(function(d) { return xScale(d.key) })
-        .y(function(d) { return yScale(d.value) })
-        );
-        
-        svg.selectAll("circle")
-        .data(nested)
-        .enter()
-        .append("circle")
-        .attr("cx", (d) => xScale(d.key))
-        .attr("cy", (d) => yScale(d.value))
-        .attr("r", 5)
-        .attr("fill", "red");
+                    var line = d3.line().x(function(d) { return xScale(d.Time) })
+                                        .y(function(d) { return yScale(d.CO2LvL) })
 
-        var g = svg.append("g")
-            .attr("transform", "translate(" + 100 + "," + 0 + ")");
+                                svg.append("text")
+                                    .attr("x", width/2 )
+                                    .attr("y", height - 15 + 80)
+                                    .attr("text-anchor", "middle")
+                                    .style("font-weight", "bold")
+                                    .style("font-family", "Arial")
+                                    .style("font-size", 38)
+                                    .text("Years");
 
-        g.append("g")
-            .attr("class", "xAxis")
-            .attr("transform", "translate(0," + (h - padding) + ")")
-            .call(d3.axisBottom(xScale));
+                                svg.append("text")
+                                .attr("text-anchor", "middle")
+                                .attr("transform", "rotate(-90)")
+                                .attr("x", - margin.top - 200)
+                                .attr("y", - margin.right - 50)
+                                .style("font-weight", "bold")
+                                .style("font-family", "Arial")
+                                .style("font-size", 38)
+                                .text("Annual CO2 emissions");
 
-                
-        g.append("g")
-            .attr("class", "yAxis")
-            .call(d3.axisLeft(yScale).tickFormat(function(d){
-                return d;
-            }).ticks(10))
-            .append("text")
-            .attr("y", 6)
-            .attr("dy", "0.71em")
-            .attr("text-anchor", "end")
-            .text("value");
-});
+                    var LineChart = svg.append("g")
+
+                           LineChart.selectAll("MyLines")
+                                    .data(newdata)
+                                    .enter()
+                                    .append("path")
+                                    .attr("d",function(d) {return line(d.values)})
+                                    .attr("fill", "none")
+                                    .attr("stroke", function(d) {
+                                        if(d.key == "Italy") {return "red";}
+                                        else if(d.key == "Denmark") {return "blue";}
+                                        else if(d.key == "United Kingdom") {return "green";}
+                                        
+                                    })
+                                    .style("stroke-width", "3");
+
+                                    svg.append('g')
+                                        .attr('class', 'grid')
+                                        .call(d3.axisLeft()
+                                        .scale(yScale)
+                                        .tickSize(-width, 0, 0)
+                                        .tickFormat(''))
+                }
+            })
 
         </script>
     </body>

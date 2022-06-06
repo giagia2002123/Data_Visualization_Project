@@ -1,4 +1,4 @@
-Year:year,Number of battery electric cars:number,Number of plug-in hybrid electric cars:number,Total vehicles:number,Share of electric cars in new registrations [%]:number
+Year,Number of battery electric cars:number,Number of plug-in hybrid electric cars:number,Total vehicles:number,Share of electric cars in new registrations [%]:number
 2010,734,,13181154,0.01
 2011,7759,,12829535,0.06
 2012,13986,9000,12031054,0.19
