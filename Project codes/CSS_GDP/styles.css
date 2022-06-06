@@ -1,0 +1,59 @@
+h1,
+h2,
+h3,
+h4 {
+    margin: .1rem 0;
+}
+
+h1 {
+    font-size: 2rem;
+}
+
+h2 {
+    font-size: 1.5rem;
+    padding-left: 20px;
+}
+
+h3 {
+    color: blue;
+    font-size: 1.2rem;
+    font-weight: bold;
+    padding-left: 40px;
+}
+
+h4 {
+    font-size: 1rem;
+    font-style: italic;
+    padding-left: 60px;
+}
+
+p {
+    color: forestgreen;
+    font-size: 1.5rem;
+}
+
+#tooltip {
+    position: absolute;
+    width: auto;
+    height: auto;
+    padding: 10px;
+    background-color: white;
+    -webkit-border-radius: 10px;
+    -moz-border-radius: 10px;
+    border-radius: 10px;
+    -webkit-box-shadow: 4px 4px 10px rgba(0, 0, 0, 0.4);
+    -moz-box-shadow: 4px 4px 10px rgba(0, 0, 0, 0.4);
+    box-shadow: 4px 4px 10px rgba(0, 0, 0, 0.4);
+    pointer-events: none;
+}
+
+#tooltip.hidden {
+    display: none;
+}
+
+#tooltip p {
+    margin: 0;
+    font-family: san-serif;
+    font-size: 16px;
+    line-height: 30px;
+}

@@ -1,0 +1,21 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <link href="CSS_GDP/styles.css" rel="stylesheet">
+            <h4>Data science and data visulization</h4>
+        <title>GDP</title>
+        <script src="https://d3js.org/d3.v4.min.js"></script>
+    </head>
+    <body>
+        <div style="text-align: center;">
+            <h1>GDP Per Capital By Year</h1>
+            <div id="d3-scatter"> </div>
+        </div>
+        <script src="GDP_PerCapital.js"></script>
+        
+        <div id="tooltip" class="hidden">
+            <p><strong>Country</strong></p>
+            <p><span id="value">100</span></p>
+        </div>
+    </body>
+</html>
