@@ -1,0 +1,102 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <h1 style="text-align:center; font-size:12x; font-family:arial; color:black; margin:10px;"> Change in annual CO₂ emissions </h1>
+        <h2 style="text-align:center; font-size:12x; font-family:arial; color:black; margin:10px;"> Between 2000 and 2010, greenhouse gas emissions had grown by 24%, almost three times as much as the increase in the previous decade </h2>
+        <title> Change in annual CO₂ emissions </title>
+        <script src="https://d3js.org/d3.v4.min.js"></script>
+    </head>
+    
+    <body>
+        <div style="text-align: center;">
+            <div id="LineGraph"> </div>
+        </div>
+
+        <script type="text/javascript">
+        
+            var rowConverter = function(d) {
+                return{
+                    Country : d.Entity,
+                    Time : d.Year,
+                    CO2LvL : d["Annual CO2 emissions"]
+                }
+            };
+
+            d3.csv("https://raw.githubusercontent.com/GordonHuy/Data_Visualization_Project/master/Datasets/Change%20in%20annual%20CO%E2%82%82%20emissions.csv", rowConverter, function(error, data) {
+                if (error) {
+                    console.log(error);
+                }
+                else {
+                    console.table(data);
+
+                    var margin = {top: 100, right: 50, bottom: 100, left: 100},
+                    width = 1000 - margin.left - margin.right,
+                    height = 800 - margin.top - margin.bottom;
+
+                    var newdata = d3.nest()
+                        .key(function(d) {return d.Country})
+                        .entries(data);
+                    
+                    console.table(newdata)
+
+                    var svg = d3.select("#LineGraph")
+                                .append("svg")
+                                .attr("width", width + margin.left + margin.right)
+                                .attr("height", height + margin.top + margin.bottom)
+                                .append("g")
+                                .attr("transform", "translate(" + margin.left + "," + margin.top + ")");
+
+                    var xScale = d3.scaleTime()
+                                    .domain(d3.extent(data, function(d) { return d.Time; }))
+                                    .range([ 0, width]);
+                                svg.append("g")
+                                    .attr("transform", "translate(0," + height + ")")
+                                    .call(d3.axisBottom(xScale));
+
+                    var yScale = d3.scaleLinear()
+                                    .domain([0, d3.max(data, function(d) { return d.CO2LvL;})])
+                                    .range([ height, 0]);
+                                svg.append("g")
+                                    .call(d3.axisLeft(yScale));
+
+                    var line = d3.line().x(function(d) { return xScale(d.Time) })
+                                        .y(function(d) { return yScale(d.CO2LvL) })
+
+                                svg.append("text")
+                                    .attr("x", width/2 )
+                                    .attr("y", height - 15 + 80)
+                                    .attr("text-anchor", "middle")
+                                    .style("font-weight", "bold")
+                                    .style("font-family", "Arial")
+                                    .style("font-size", 38)
+                                    .text("Years");
+
+                                svg.append("text")
+                                .attr("text-anchor", "middle")
+                                .attr("transform", "rotate(-90)")
+                                .attr("x", - margin.top - 200)
+                                .attr("y", - margin.right - 10)
+                                .style("font-weight", "bold")
+                                .style("font-family", "Arial")
+                                .style("font-size", 38)
+                                .text("Annual CO2 emissions");
+
+                                svg.selectAll("MyLines")
+                                    .data(newdata)
+                                    .enter()
+                                    .append("path")
+                                    .attr("d",function(d) {return line(d.values)})
+                                    .attr("fill", "none")
+                                    .attr("stroke", function(d) {
+                                        if(d.key == "World") {return "red";}
+                                        else if(d.key == "United States") {return "blue";}
+                                        else if(d.key == "United Kingdom") {return "green"; }
+                                    })
+                                    .style("stroke-width", "3");
+
+                }
+            })
+
+        </script>
+    </body>
+</html>

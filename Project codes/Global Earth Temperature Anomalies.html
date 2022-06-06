@@ -1,25 +1,26 @@
 <html>
 
    <head>
-    <title> Lab 4 </title>
+    <title> Global Earth Temperature Anomalies </title>
 	<script src="https://d3js.org/d3.v4.min.js"></script>
    </head>
 	
    <body>
     <div style="text-align: center;">
-        <h1>Data Science And Data Visulization</h1>
-        <h2>Project</h2>
-        <h2>The Changed In Global Climate</h3>
+        <h1 style="text-align:center; font-size:12x; font-family:arial; color:black; margin:10px;"> Global Earth Temperature Anomalies </h1>
+        <h2 style="text-align:center; font-size:12x; font-family:arial; color:black; margin:10px;">The following bar chart represent the changed in Celsius Degree of the world temperature separated by year</h2>
     </div>
-    <p>The following bar chart represent the changed in Celsius Degree of the world temperature separated by year</p>
+    
 	
 	<div id="d3-container"></div>
     <button id="bt1">Prev</button>
     <button id="bt2">Next</button>
 	<svg width="1200" height="800"></svg>
+
 	<script type="text/javascript">
+
     var body = d3.select("body");
-    body.append("p").html("Year -- Degree Changed<br>");
+    body.append("p")
     var index = 0;
 		  
     var rowConverter = function(d) {
@@ -53,7 +54,6 @@
               .append("p")
               .attr("class", "bar")
               .merge(bar)
-              .html(d => d.year + " -- " + d.value)
         }
 
         var xScale = d3.scaleBand()

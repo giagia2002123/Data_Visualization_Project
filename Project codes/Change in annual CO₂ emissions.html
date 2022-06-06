@@ -1,3 +1,19 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <h1 style="text-align:center; font-size:12x; font-family:arial; color:black; margin:10px;"> Change in annual CO₂ emissions </h1>
+        <h2 style="text-align:center; font-size:12x; font-family:arial; color:black; margin:10px;"> Between 2000 and 2010, greenhouse gas emissions had grown by 24%, almost three times as much as the increase in the previous decade </h2>
+        <title> Change in annual CO₂ emissions </title>
+        <script src="https://d3js.org/d3.v4.min.js"></script>
+    </head>
+    
+    <body>
+        <div style="text-align: center;">
+            <div id="d3-CO2"> </div>
+        </div>
+
+        <script type="text/javascript">
+
 d3.csv("https://raw.githubusercontent.com/GordonHuy/Data_Visualization_Project/master/Datasets/Change%20in%20annual%20CO%E2%82%82%20emissions.csv", function(d) {
     return {
         country: d.Entity,
@@ -98,5 +114,8 @@ d3.csv("https://raw.githubusercontent.com/GordonHuy/Data_Visualization_Project/m
             .attr("dy", "0.71em")
             .attr("text-anchor", "end")
             .text("value");
-        
 });
+
+        </script>
+    </body>
+</html>
