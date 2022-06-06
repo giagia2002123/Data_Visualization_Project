@@ -5,9 +5,32 @@
         <link rel="stylesheet" href="CSS files\Percentage of whole sample reporting specific emotions in relation to climate change.css"/>
     </head>
 
-    
-
     <body>
+        <h1 style="text-align:center; font-size:12x; font-family:arial; color:black; margin:10px;"> Heat Wave Characteristics in the United States </h1>
         
+        <script type="text/javascript">
+            var rowConverter = function(d){
+                return {
+                    Decade : d.Decade,
+                    Frequency : d["Frequency(average number of heat waves per year)"],
+                    Duration : d["Duration(length of heat waves)(days)"],
+                    Season : d["Season(average length of annual heat wave season)(days)"],
+                    Intensity : d["Intensity(average temperature above local threshold during heat waves)(°F)"]
+                }
+            }
+            d3.csv("https://raw.githubusercontent.com/GordonHuy/Data_Visualization_Project/master/Datasets/Heat%20Wave%20Characteristics%20in%20the%20United%20States.csv", rowConverter, function(error, data){
+                if (error){
+                    console.log(error);
+                }
+                else {
+                    console.table(data);
+                    
+                    
+                   
+                }
+            });
+
+        </script>
+
     </body>
 </html>          
