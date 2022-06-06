@@ -1,9 +1,8 @@
 <!DOCTYPE html>
 <html>
     <head>
-        <h1 style="text-align:center; font-size:12x; font-family:arial; color:black; margin:10px;"> Change in annual CO₂ emissions </h1>
-        <h2 style="text-align:center; font-size:12x; font-family:arial; color:black; margin:10px;"> The domestic CO2 output of rich countries is falling without a major recession. Since the year 2000, Italy 28%, the UK 35%, Denmark 43% decrease </h2>
-        <title> Change in annual CO₂ emissions </title>
+        <h1 style="text-align:center; font-size:12x; font-family:arial; color:black; margin:10px;"> Levelized cost of every energy types in the world </h1>
+        <title> Levelized cost of every energy types in the world </title>
         <script src="https://d3js.org/d3.v4.min.js"></script>
     </head>
     
@@ -34,7 +33,7 @@
                 else {
                     console.table(data);
 
-                    var margin = {top: 100, right: 50, bottom: 100, left: 200},
+                    var margin = {top: 200, right: 50, bottom: 100, left: 200},
                     width = 1500 - margin.left - margin.right,
                     height = 800 - margin.top - margin.bottom;
 
@@ -50,10 +49,11 @@
                     .range([ 0, width ]);
                     svg.append("g")
                     .attr("transform", "translate(0," + height + ")")
-                    .call(d3.axisBottom(x));
+                    .call(d3.axisBottom(x))
+                    .call(d3.axisBottom(x).ticks(36));
 
                     var y = d3.scaleLinear()
-                    .domain([0, 1])
+                    .domain([0, 0.5])
                     .range([ height, 0 ]);
                     svg.append("g")
                     .call(d3.axisLeft(y))
@@ -61,12 +61,113 @@
                     svg.append("path")
                     .datum(data)
                     .attr("fill", "none")
-                    .attr("stroke", "steelblue")
-                    .attr("stroke-width", 1.5)
+                    .attr("stroke", "red")
+                    .attr("stroke-width", 2)
                     .attr("d", d3.line()
                     .x(function(d) { return x(d.Time) })
                     .y(function(d) { return y(d.CSP) }) 
                     )
+
+                    svg.append("path")
+                    .datum(data)
+                    .attr("fill", "none")
+                    .attr("stroke", "orange")
+                    .attr("stroke-width", 2)
+                    .attr("d", d3.line()
+                    .x(function(d) { return x(d.Time) })
+                    .y(function(d) { return y(d.Hydro) }) 
+                    )
+
+                    svg.append("path")
+                    .datum(data)
+                    .attr("fill", "none")
+                    .attr("stroke", "yellow")
+                    .attr("stroke-width", 2)
+                    .attr("d", d3.line()
+                    .x(function(d) { return x(d.Time) })
+                    .y(function(d) { return y(d.Solar) }) 
+                    )
+
+                    svg.append("path")
+                    .datum(data)
+                    .attr("fill", "none")
+                    .attr("stroke", "green")
+                    .attr("stroke-width", 2)
+                    .attr("d", d3.line()
+                    .x(function(d) { return x(d.Time) })
+                    .y(function(d) { return y(d.OnShoreWind) }) 
+                    )
+
+                    svg.append("path")
+                    .datum(data)
+                    .attr("fill", "none")
+                    .attr("stroke", "blue")
+                    .attr("stroke-width", 2)
+                    .attr("d", d3.line()
+                    .x(function(d) { return x(d.Time) })
+                    .y(function(d) { return y(d.BioEnergy) }) 
+                    )
+
+                    svg.append("path")
+                    .datum(data)
+                    .attr("fill", "none")
+                    .attr("stroke", "purple")
+                    .attr("stroke-width", 2)
+                    .attr("d", d3.line()
+                    .x(function(d) { return x(d.Time) })
+                    .y(function(d) { return y(d.GeoThermal) }) 
+                    )
+
+                    svg.append("path")
+                    .datum(data)
+                    .attr("fill", "none")
+                    .attr("stroke", "black")
+                    .attr("stroke-width", 2)
+                    .attr("d", d3.line()
+                    .x(function(d) { return x(d.Time) })
+                    .y(function(d) { return y(d.OffshoreWind) }) 
+                    )
+
+                    svg.append('g')
+                    .attr('class', 'grid')
+                    .call(d3.axisLeft()
+                    .scale(y)
+                    .tickSize(-width, 0, 0)
+                    .tickFormat(''))
+
+                    svg.append("text")
+                    .attr("x", width/2 )
+                    .attr("y", height - 15 + 80)
+                    .attr("text-anchor", "middle")
+                    .style("font-weight", "bold")
+                    .style("font-family", "Arial")
+                    .style("font-size", 38)
+                    .text("Years");
+
+                    svg.append("text")
+                    .attr("text-anchor", "middle")
+                    .attr("transform", "rotate(-90)")
+                    .attr("x", - margin.top - 50)
+                    .attr("y", - margin.right - 10)
+                    .style("font-weight", "bold")
+                    .style("font-family", "Arial")
+                    .style("font-size", 30)
+                    .text("Levelized cost of energy (USD/kWh)");
+
+                    svg.append("circle").attr("cx",0).attr("cy",-90).attr("r", 7).style("fill", "red")
+                    svg.append("circle").attr("cx",0).attr("cy",-70).attr("r", 7).style("fill", "orange")
+                    svg.append("circle").attr("cx",0).attr("cy",-50).attr("r", 7).style("fill", "yellow")
+                    svg.append("circle").attr("cx",0).attr("cy",-30).attr("r", 7).style("fill", "green")
+                    svg.append("circle").attr("cx",0).attr("cy",-150).attr("r", 7).style("fill", "blue")
+                    svg.append("circle").attr("cx",0).attr("cy", -110).attr("r", 7).style("fill", "purple")
+                    svg.append("circle").attr("cx",0).attr("cy", -130).attr("r", 7).style("fill", "black")
+                    svg.append("text").attr("x", 10).attr("y", -90).text("Concentrated solar power plant").style("font-size", "15px").attr("alignment-baseline","middle")
+                    svg.append("text").attr("x", 10).attr("y", -70).text("Hydro").style("font-size", "15px").attr("alignment-baseline","middle")
+                    svg.append("text").attr("x", 10).attr("y", -50).text("Solar panels").style("font-size", "15px").attr("alignment-baseline","middle")
+                    svg.append("text").attr("x", 10).attr("y", -30).text("On Shore Wind").style("font-size", "15px").attr("alignment-baseline","middle")
+                    svg.append("text").attr("x", 10).attr("y", -150).text("Bio Energy").style("font-size", "15px").attr("alignment-baseline","middle")
+                    svg.append("text").attr("x", 10).attr("y", -110).text("Geo Thermal").style("font-size", "15px").attr("alignment-baseline","middle")
+                    svg.append("text").attr("x", 10).attr("y", -130).text("Off shore Wind").style("font-size", "15px").attr("alignment-baseline","middle")
                 }
             })
 
