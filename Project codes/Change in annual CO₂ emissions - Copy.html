@@ -2,7 +2,7 @@
 <html>
     <head>
         <h1 style="text-align:center; font-size:12x; font-family:arial; color:black; margin:10px;"> Change in annual CO₂ emissions </h1>
-        <h2 style="text-align:center; font-size:12x; font-family:arial; color:black; margin:10px;"> Between 2000 and 2010, greenhouse gas emissions had grown by 24%, almost three times as much as the increase in the previous decade </h2>
+        <h2 style="text-align:center; font-size:12x; font-family:arial; color:black; margin:10px;"> The domestic CO2 output of rich countries is falling without a major recession. Since the year 2000, the EU as a whole shows a 21% decrease, Italy 28%, the UK 35%, Denmark 43% </h2>
         <title> Change in annual CO₂ emissions </title>
         <script src="https://d3js.org/d3.v4.min.js"></script>
     </head>
@@ -28,8 +28,8 @@
                 else {
                     console.table(data);
 
-                    var margin = {top: 100, right: 50, bottom: 100, left: 150},
-                    width = 900 - margin.left - margin.right,
+                    var margin = {top: 100, right: 50, bottom: 100, left: 200},
+                    width = 1500 - margin.left - margin.right,
                     height = 800 - margin.top - margin.bottom;
 
                     var newdata = d3.nest()
@@ -50,7 +50,7 @@
                                     .range([ 0, width]);
                                 svg.append("g")
                                     .attr("transform", "translate(0," + height + ")")
-                                    .call(d3.axisBottom(xScale));
+                                    .call(d3.axisBottom(xScale).ticks(20));
 
                     var yScale = d3.scaleLinear()
                                     .domain([0, d3.max(data, function(d) { return +d.CO2LvL;})])
