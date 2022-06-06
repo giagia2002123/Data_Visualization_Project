@@ -80,9 +80,8 @@
                                 .style("font-size", 38)
                                 .text("Annual CO2 emissions");
 
-                    var LineChart = svg.append("g")
-
-                           LineChart.selectAll("MyLines")
+                                 svg.append("g")
+                                    .selectAll("MyLines")
                                     .data(newdata)
                                     .enter()
                                     .append("path")
@@ -102,6 +101,14 @@
                                         .scale(yScale)
                                         .tickSize(-width, 0, 0)
                                         .tickFormat(''))
+
+                                    svg.append("circle").attr("cx",0).attr("cy",-90).attr("r", 7).style("fill", "red")
+                                    svg.append("circle").attr("cx",0).attr("cy",-70).attr("r", 7).style("fill", "blue")
+                                    svg.append("circle").attr("cx",0).attr("cy",-50).attr("r", 7).style("fill", "green")
+                                    svg.append("text").attr("x", 10).attr("y", -90).text("Italy").style("font-size", "15px").attr("alignment-baseline","middle")
+                                    svg.append("text").attr("x", 10).attr("y", -70).text("Denmark").style("font-size", "15px").attr("alignment-baseline","middle")
+                                    svg.append("text").attr("x", 10).attr("y", -50).text("United Kingdom").style("font-size", "15px").attr("alignment-baseline","middle")
+                                    
                 }
             })
 
