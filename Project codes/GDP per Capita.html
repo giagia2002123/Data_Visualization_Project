@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 <html>
     <head>
-        <h1 style="text-align:center; font-size:12px; font-family:arial; color:black; margin:10px;"> GDP per Capital </h1>
+        <h1 style="text-align:center; font-size:12x; font-family:arial; color:black; margin:10px;"> GDP per Capital </h1>
         <title> GDP per Capita </title>
         <script src="https://d3js.org/d3.v4.min.js"></script>
     </head>
@@ -87,10 +87,9 @@
                                     .attr("d",function(d) {return line(d.values)})
                                     .attr("fill", "none")
                                     .attr("stroke", function(d) {
-                                        if(d.key == "India") {return "red";}
-                                        else if(d.key == "China") {return "blue";}
+                                        if(d.key == "Italy") {return "red";}
+                                        else if(d.key == "Denmark") {return "blue";}
                                         else if(d.key == "United Kingdom") {return "green";}
-                                        else if(d.key == "United States") {return "orange";}
                                         
                                     })
                                     .style("stroke-width", "3");
@@ -105,11 +104,9 @@
                                     svg.append("circle").attr("cx",0).attr("cy",-90).attr("r", 7).style("fill", "red")
                                     svg.append("circle").attr("cx",0).attr("cy",-70).attr("r", 7).style("fill", "blue")
                                     svg.append("circle").attr("cx",0).attr("cy",-50).attr("r", 7).style("fill", "green")
-                                    svg.append("circle").attr("cx",0).attr("cy",-30).attr("r", 7).style("fill", "orange")
-                                    svg.append("text").attr("x", 10).attr("y", -90).text("India").style("font-size", "15px").attr("alignment-baseline","middle")
-                                    svg.append("text").attr("x", 10).attr("y", -70).text("China").style("font-size", "15px").attr("alignment-baseline","middle")
+                                    svg.append("text").attr("x", 10).attr("y", -90).text("Italy").style("font-size", "15px").attr("alignment-baseline","middle")
+                                    svg.append("text").attr("x", 10).attr("y", -70).text("Denmark").style("font-size", "15px").attr("alignment-baseline","middle")
                                     svg.append("text").attr("x", 10).attr("y", -50).text("United Kingdom").style("font-size", "15px").attr("alignment-baseline","middle")
-                                    svg.append("text").attr("x", 10).attr("y", -30).text("United States").style("font-size", "15px").attr("alignment-baseline","middle")
                                     
                 }
             })
