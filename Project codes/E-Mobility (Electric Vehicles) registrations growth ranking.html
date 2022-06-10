@@ -1,0 +1,100 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <h1 style="text-align:center; font-size:12x; font-family:arial; color:black; margin:10px;"> E-Mobility (Electric Vehicles) registrations growth ranking </h1>
+        <title> E-Mobility (Electric Vehicles) registrations growth ranking </title>
+        <script src="https://d3js.org/d3.v4.min.js"></script>
+    </head>
+    
+    <body>
+        
+        <div id="HorizontalBarChart"></div>
+
+        <script type="text/javascript">
+        
+            var rowConverter = function(d) {
+                return{
+                    Countries: d["Country/Region"],
+                    Growth : d["% Growth (Between 2020 registrations and 2019 registration)"]
+                }
+            };
+
+            d3.csv("https://raw.githubusercontent.com/GordonHuy/Data_Visualization_Project/master/Datasets/E-Mobility-Ranking.csv", rowConverter, function(error, data) {
+                if (error) {
+                    console.log(error);
+                }
+                else {
+                    console.table(data);
+
+                    var margin = {top: 120, right: 50, bottom: 200, left: 200},
+                    width = 1500 - margin.left - margin.right,
+                    height = 800 - margin.top - margin.bottom;
+
+                    var svg = d3.select("#HorizontalBarChart")
+                                .append("svg")
+                                .attr("width", width + margin.left + margin.right)
+                                .attr("height", height + margin.top + margin.bottom)
+                                .append("g")
+                                .attr("transform", "translate(" + margin.left + "," + margin.top + ")");
+
+                    var x = d3.scaleLinear()
+                            .domain([-10,300])
+                            .range([0, width]);
+
+                        svg.append("g")
+                            .attr("transform", "translate(0," + height + ")")
+                            .call(d3.axisBottom(x))
+                            .selectAll("text")
+                            .style("text-anchor", "end");      
+
+                    var verticalGrid = svg.append('g')
+                                        .attr('class', 'grid')
+                                        .attr('transform', `translate(0, ${height})`)
+                                        .call(d3.axisBottom().scale(x)
+                                        .tickSize(-height, 0, 0)
+                                        .tickFormat(''))
+
+                    var y = d3.scaleBand()
+                            .range([0, height])
+                            .domain(data.map(function(d) {return d.Countries;}))
+                            .padding(0.25);
+                            
+                        svg.append("g")
+                            .call(d3.axisLeft(y))
+
+                        svg.selectAll(".bar")
+                            .data(data)
+                            .enter()
+                            .append("rect")
+                            .attr("class", "bar")
+                            .attr("x", function(d) { return x(Math.min(0, d.Growth)); })
+                            .attr("y", function(d) { return y(d.Countries); })
+                            .attr("width", function(d) { return Math.abs(x(d.Growth) - x(0)); })
+                            .attr("height", y.bandwidth())
+                            .attr("fill", "blue");
+
+                        svg.append("text")
+                            .attr("text-anchor", "middle")
+                            .attr("transform", "rotate(-90)")
+                            .attr("x", - margin.top - 100)
+                            .attr("y", - margin.right - 20)
+                            .style("font-weight", "bold")
+                            .style("font-family", "Arial")
+                            .style("font-size", "30px")
+                            .text("Countries");
+
+                        svg.append("text")
+                            .style("font-size", "30px")
+                            .style("font-weight", "bold")
+                            .attr("font-family", "Arial")
+                            .attr("text-anchor", "end")
+                            .attr("x", width - 70)
+                            .attr("y", height + margin.top - 50)
+                            .text("Registrations growth (%) (Between 2020 registrations and 2019 registration)")
+                            .attr("fill","black");
+                }
+            })
+
+        </script>
+    </body>
+</html>
